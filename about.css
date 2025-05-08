@@ -1,0 +1,300 @@
+:root {
+  --primary-color: #121b46;
+  --secondary-color: #9e4a44;
+  --background-color: #f7f7f7;
+  --text-color: #333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins";
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  background: white;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Header Styles */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  background: rgb(185, 180, 180);
+  z-index: 1000;
+}
+
+.header .logo {
+  color: black;
+  font-size: 32px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.header .logo span {
+  color: red;
+}
+
+.header .navbar a {
+  color: black;
+  text-decoration: none;
+  margin-left: 35px;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.navbar ul {
+
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.navbar a.active {
+  color: rgb(180, 3, 3);
+  font-weight: bold;
+  border-bottom: 2px solid  rgb(180, 3, 3);
+}
+
+/* Activity Section Styles */
+
+.Activity-section {
+  display: flex;
+  color: rgb(180, 3, 3);
+  font-size: 25px;
+  margin-left: 20px;
+  padding: 10px;
+  border-radius: 50%;
+  transition: 0.3s;
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.Activity-section i:hover {
+  color: #007bff;
+  transform: scale(1.2);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Button Styles */
+
+.btn {
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+  background: #121b46;
+  color: rgb(219, 219, 219);
+  font-size: 16px;
+  outline: none;
+  border: 2px solid;
+  cursor: pointer;
+  font-weight: 600;
+  z-index: 1;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.btn1 {
+  height: 40px;
+  width: 100px;
+  border-radius: 8px;
+  background: white;
+  color: rgb(228, 107, 107);
+  font-size: 16px;
+  outline: none;
+  border: 2px solid;
+  cursor: pointer;
+  font-weight: 600;
+  z-index: 1;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  padding: 5px;
+  text-align: center;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  height: 100%;
+  width: 0%;
+  z-index: -1;
+  transition: 1s;
+}
+
+.btn:hover::before {
+  width: 100%;
+}
+
+.btn:hover {
+  color: #121b46;
+}
+
+.btn1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #121b46;
+  height: 100%;
+  width: 0%;
+  z-index: -1;
+  transition: 1s;
+}
+
+.btn1:hover::before {
+  width: 100%;
+}
+
+.btn1:hover {
+  color: #ffffff;
+}
+.menu-icon {
+  font-size: 28px;
+  display: none;
+  cursor: pointer;
+  color: black;
+}
+
+#hamburger-icon {
+  display: inline;
+}
+
+#close-icon {
+  display: none;
+}
+
+
+
+/* About Us Styles */
+.about-us {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-image: url(assets/images/abt.bg.avif);
+  background-position: center;
+  background-size: cover;
+  height: auto;
+  margin-top: 100px;
+  padding-bottom: 200px;
+}
+
+.aboutus-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-content {
+  padding: 20px;
+}
+
+.about-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #9e4a44;
+  font-weight: 600;
+}
+
+.about-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Footer Styles */
+/* Footer */
+footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background: rgb(185, 180, 180);
+}
+
+footer .foodhub-logo {
+  color: black;
+  font-weight: 600;
+}
+
+.foodhub-logo span {
+  color: red;
+}
+
+.discount, .Support, .Menu, .foodhub-logo {
+  background: #f7f7f7;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.discount h2, .Menu h2 {
+  font-size: 1.5rem;
+}
+
+.discount p, .Support p, .Menu p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+
+.Support span {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.Menu a {
+  color: #000;
+  text-decoration: none;
+}
+
+.social-links {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.social-links a {
+  font-size: 1.5rem;
+  color: #333;
+  margin-right: 10px;
+}
+
+.social-links a:hover {
+  color: #e91000;
+}

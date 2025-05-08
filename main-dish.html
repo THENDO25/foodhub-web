@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="menu.css">
+    <link rel="stylesheet" href="res.css">
+    <script type="module" src="menu.js"></script>
+    <script src="cart.js"></script>
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <title>African_foodhub</title>
+  </head>
+  <body>
+    <section>
+      <header class="header" id="home">
+        <a href="#" class="logo">Food<span>Hub</span></a>
+        <nav class="navbar">
+          <div id="menu-toggle" class="menu-icon">
+            <i id="hamburger-icon" class="fa fa-bars" aria-hidden="true"></i>  <!-- Hamburger Icon -->
+            <i id="close-icon" class="fa fa-times" aria-hidden="true" style="display: none;"></i>  <!-- Close (X) Icon -->
+          </div>
+          <a href="#" class="navbar-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </a>
+          <ul>
+            <li><a href="Fastfood.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="review.html">Reviews</a></li>
+            <li><a href="cart.html">Cart</a></li>
+          </ul>
+        </nav>
+        <div class="Activity-section">
+          <i class='bx bx-heart'></i>
+          <i class='bx bx-cart'></i>
+
+        </div>
+        <a href="login-small.html" class="btn">Login</a>
+        
+      </header>
+    </section>
+    <section id="menu-section" class="dishes">
+      <h1>Explore our Dishes</h1>
+     
+        <nav class="dish-navbar">
+          <ul>
+            <li><a href="menu.html">Breakfast</a></li>
+            <li><a href="main-dish.html">Meal</a></li>
+            <li><a href="desserts.html">Desserts</a></li>
+            <li><a href="snd.html">Snacks & Drinks</a></li>
+          </ul>
+        </nav>
+      
+    </section>
+    <!--notification-->
+    <div id="custom-alert" class="custom-alert hidden">
+      <p>Added item to favorite ❤️</p>
+    </div>
+    <div id="custom-alert" class="custom-alert hidden">
+      <p>Added to cart</p>
+    </div>
+    <!---->
+    <div class="container">
+      <div class="main-dish-section">
+        <div class="menu-grid-container">
+          <!-- Item 1: SpaMince -->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/spaggheti_and_mince (2).jpeg"
+              alt="Breakfast Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">SpaMince</h2>
+                <h2 class="name-and-price">R112</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/spaggheti_and_mince (2).jpeg"
+                data-title="spaggheti_and_mince"
+                data-price="R112"
+                data-description="Enjoy our tasty food made with love"
+                data-details="Twisted Comfort: Indulge in our signature spaghetti dish, smothered in rich mince and melted cheese - a match made in comfort food heaven!">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('spaggheti_and_mince', 111.99, 'assets/images/main-dish/spaggheti_and_mince (2).jpeg')"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2: Marratii -->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/main-dish.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">Marratii</h2>
+                <h2 class="name-and-price">R130</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Beef Stew"
+                data-price="R112"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Marratii', 129.99, 'assets/images/main-dish/main-dish.jpeg')"></i>
+              </div>
+            </div>
+          </div>
+
+          <!--ITEM3-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/main-dish1.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">Jactoes</h2>
+                <h2 class="name-and-price">R180</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Beef Stew"
+                data-price="R112"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Jactoes', 179.99, 'assets/images/main-dish/main-dish1.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM4-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/pizza_on_black_bg.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">Munchies</h2>
+                <h2 class="name-and-price">R140</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Munchies"
+                data-price="R140"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Pizza Munch', 139.99, 'assets/images/main-dish/pizza_on_black_bg.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM5-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/burger_dish_on_a_black_bg.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">MunchBurger</h2>
+                <h2 class="name-and-price">R140</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="MunchBurger"
+                data-price="R140"
+                data-description="Enjoy our tasty food made with love"
+                data-details="Burger Bash: Get your burger fix with our juicy beef patty, crispy bacon, melted cheddar, and creamy mayo - a classic combo!">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('MunchBurger', 139.99, 'assets/images/main-dish/burger_dish_on_a_black_bg.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM6-->
+          <div class="main-dish">
+            <img
+              src="assets/images/main-dish/hot_wings_dish_on_a_black_background.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">HotWings</h2>
+                <h2 class="name-and-price">R95</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Hot Wings"
+                data-price="R95"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Hot Wings', 94.99, 'assets/images/main-dish/hot_wings_dish_on_a_black_background.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM7-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/pizza_on_black_bg.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">peperoni</h2>
+                <h2 class="name-and-price">R98</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Peperoni"
+                data-price="R98"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Peperoni', 97.99, 'assets/images/main-dish/pizza_on_black_bg.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM8-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/main-dish6.png"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">Pizza</h2>
+                <h2 class="name-and-price">R100</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Pizza"
+                data-price="R100"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Pizza', 99.99, 'assets/images/main-dish/main-dish6.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM9-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/9.png" alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">HotBraai</h2>
+                <h2 class="name-and-price">R150</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Hot Chisanyama"
+                data-price="R150"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Hot Braai', 149.99, 'assets/images/main-dish/main-dish1.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM10-->
+          <div class="main-dish">
+            <img src="assets/images/main-dish/8.jpeg" alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">Combo9</h2>
+                <h2 class="name-and-price">R140</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/8.jpeg"
+                data-title="Combo9"
+                data-price="R140"
+                data-description="Enjoy our tasty food made with love"
+                data-details="This breakfast dish consists of poached eggs on toasted English muffins with ham or bacon, topped with hollandaise sauce">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Combo9', 139.99, 'assets/images/main-dish/main-dish/8.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM10-->
+          <div class="main-dish">
+            <img
+              src="assets/images/main-dish/beef_stew_with_rice_on_a_black.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">Beef</h2>
+                <h2 class="name-and-price">R95</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+                data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                data-title="Beef Stew"
+                data-price="R95"
+                data-description="Enjoy our tasty food made with love"
+                data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+             </i>
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'
+                  onclick="addToCart('Beef Choice', 94.99, 'assets/images/main-dish/beef_stew_with_rice_on_a_black.jpeg')"></i>
+
+              </div>
+            </div>
+          </div>
+          <!--ITEM11-->
+          <div class="main-dish">
+            <img
+              src="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+              alt="Main Dish Image">
+            <div class="innertxt">
+              <div class="name-and-price">
+                <h2 class="name-and-price">BeefStew</h2>
+                <h2 class="name-and-price">R110</h2>
+              </div>
+              <p>Enjoy our tasty food made with love</p>
+              <div class="Activity-section-menu">
+                <i class='bx bxs-food-menu view-popup'
+   data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+   data-title="Beef Stew"
+   data-price="R110"
+   data-description="Enjoy our tasty food made with love"
+   data-details="Beef Fajita Frenzy: Enjoy our sizzling beef fajitas, with sautéed onions, bell peppers, and warm flour tortillas - a flavorful and spicy dish.">
+</i>
+
+                <i class='bx bx-heart'></i>
+                <i class='bx bx-cart'></i>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  
+
+  <!--CHEFS-->
+
+  <section>
+    <h2 class="chefs-title">Our Qualified Chefs</h2>
+    <div class="chef-section">
+      <div class="chef-card">
+        <img src="assets/images/CHEF1.jpg" alt="John Ndlovu">
+        <h3>John Ndlovu</h3>
+        <p>Executive Chef (Head Chef)</p>
+      </div>
+      <div class="chef-card">
+        <img src="assets/images/CHEF2.jpg" alt="Smith Williams">
+        <h3>Smith Williams</h3>
+        <p>Chef De Partie (Station Chef)</p>
+      </div>
+      <div class="chef-card">
+        <img src="assets/images/CHEF3.png" alt="Nate Sihongo">
+        <h3>Nate Sihongo</h3>
+        <p>Sous Chef (Deputy Chef)</p>
+      </div>
+      <div class="chef-card">
+        <img src="assets/images/CHEF4.png" alt="Danny Smith">
+        <h3>Danny Smith</h3>
+        <p>Grillardin Chef (Grill Chef)</p>
+      </div>
+    </div>
+
+    <!--search-->
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="Search your favorite dish..." />
+      <button type="submit" onclick="searchDishes()"><i class="fas fa-search"></i></button>
+    </div>
+
+
+    <footer>
+      <div class="discount">
+          <h2>Discount</h2>
+          <p>20% OFF</p>
+      </div>
+      <div class="Support">
+          <h3>Support</h3>
+          <p> Email us at:<span> thendomukwevho1125@gmail.com</span></p>
+          <p>Call or whatsapp <span>0679104109</span></p>
+      </div>
+      <div class="Menu">
+        <h2><a href="">Menu</a></h2>
+        <p><a href="menu.html">Breakfast</a></p>
+        <p><a href="main-dish.html">Main dish</a></p>
+        <p><a href="desserts.html">Dessert</a></p>
+        <p><a href="snd.html">Snacks and Drinks</a></p>
+      </div>
+      <div class="foodhub-logo">
+        <h1>Food<span>Hub</span></a>
+          <div class="social-links">
+          <a href="#" target="_blank">
+            <i class='bx bxl-facebook'></i>
+          </a>
+          <a href="#" target="_blank">
+            <i class='bx bxl-twitter'></i>
+          </a>
+          <a href="#" target="_blank">
+            <i class='bx bxl-instagram'></i>
+          </a>
+        </div>
+  
+      </div>
+    </footer>
+    <!--popup-->
+    <div class="popup" id="global-popup">
+      <div class="image-container">
+        <div class="image">
+          <img id="popup-img" src="" alt="Dish Image">
+        </div>
+        <button type="button" id="close-popup">Close</button>
+      </div>
+      <div class="details">
+        <div class="name-and-price">
+          <h2 id="popup-title">Dish Name</h2>
+          <h2 id="popup-price">Price</h2>
+        </div>
+        <p id="popup-description"></p>
+        
+        <p id="popup-details"></p>
+        <div class="wrapper">
+          <div class="popup-quantity-container">
+            <h2>Quantity</h2>
+            <span class="minus">-</span>
+            <span class="number">1</span>
+            <span class="plus">+</span>
+          </div>
+          <h2 id="popup-total">TOTAL</h2>
+          <button type="button1" id="button1" class="addtocart">ADD TO CART</button>
+        </div>
+        <div class="whitelist-container">
+          <i class='bx bx-heart favourite'>Add to favourite</i>
+          <div class="social-links">
+            <a href="#"><i class='bx bxl-facebook'></i></a>
+            <a href="#"><i class='bx bxl-twitter'></i></a>
+            <a href="#"><i class='bx bxl-instagram'></i></a>
+            <a href="#"><i class='bx bxl-whatsapp'></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--favourite-->
+    <div id="favorites-popup" class="favorites-popup hidden">
+      <h2>Your Favorites</h2>
+      <ul id="favorites-list"></ul>
+      <button onclick="closeFavorites()" class="close-btn">Close</button>
+    </div>
+<!--script-->    
+<script>
+  //active dish navbar
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentPage = window.location.pathname.split("/").pop();
+    const navLinks = document.querySelectorAll(".dish-navbar a");
+
+    navLinks.forEach(link => {
+      const linkPage = link.getAttribute("href");
+      if (linkPage === currentPage) {
+        link.classList.add("active");
+      }
+    });
+  });
+  
+  // Open popup
+  document.querySelectorAll('.view-popup').forEach(icon => {
+    icon.addEventListener('click', () => {
+      const popup = document.getElementById('global-popup');
+      document.getElementById('popup-img').src = icon.dataset.image;
+      document.getElementById('popup-title').textContent = icon.dataset.title;
+      document.getElementById('popup-price').textContent = icon.dataset.price;
+      document.getElementById('popup-description').textContent = icon.dataset.description;
+      document.getElementById('popup-details').textContent = icon.dataset.details;
+      document.getElementById('popup-total').textContent = icon.dataset.price;
+
+      popup.style.display = 'block';
+      setTimeout(() => popup.classList.add('show'), 10);
+    });
+  });
+
+  // Close popup
+  document.getElementById('close-popup').addEventListener('click', () => {
+    const popup = document.getElementById('global-popup');
+    popup.classList.remove('show');
+    setTimeout(() => popup.style.display = 'none', 300);
+  });
+
+  function searchDishes() {
+  const input = document.getElementById('searchInput').value.toLowerCase();
+  const dishes = document.querySelectorAll('.main-dish');
+  let anyVisible = false;
+
+  dishes.forEach(dish => {
+    const title = dish.querySelector('.name-and-price').textContent.toLowerCase();
+    if (title.includes(input)) {
+      dish.style.display = 'block';
+      dish.classList.add('search-match');
+      anyVisible = true;
+    } else {
+      dish.style.display = 'none';
+      dish.classList.remove('search-match');
+    }
+  });
+
+  const message = document.getElementById('no-results-message');
+  if (message) {
+    message.style.display = anyVisible ? 'none' : 'block';
+  }
+}
+</script>
+
+
+  </body>
+</html>

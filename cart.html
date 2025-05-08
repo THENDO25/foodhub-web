@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart | FoodHub</title>
+  <link rel="stylesheet" href="cart.css" />
+</head>
+
+<body>
+
+  <header class="header" id="home">
+    <a href="#" class="logo">Food<span>Hub</span></a>
+    <nav class="navbar">
+      <ul>
+        <li><a href="Fastfood.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="review.html">Reviews</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+    <div class="Activity-section">
+      <i class='bx bx-search'></i>
+      <i class='bx bx-heart'></i>
+      <a href="cart.html"><i class='bx bx-cart'></i></a>
+    </div>
+    <a href="login.html" class="btn">Login</a>
+  </header>
+
+  <div class="cart-container">
+    <h1>Your Cart</h1>
+    <div id="cart-items"></div>
+    <div class="cart-summary">
+      <h2 id="total">Total: R0.00</h2>
+      <button class="checkout-btn">Checkout</button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="checkout-modal hidden">
+    <div class="checkout-content">
+      <h2>Checkout</h2>
+      <form id="checkout-form">
+        <input type="text" placeholder="Full Name" id="name" required />
+        <input type="email" placeholder="Email" id="email" required />
+        <textarea placeholder="Delivery Address" id="address" required></textarea>
+
+        <h3>Payment Method</h3>
+        <div class="payment-options">
+          <label>
+            <input type="radio" name="payment" value="card" required />
+            Credit/Debit Card
+          </label>
+          <label>
+            <input type="radio" name="payment" value="cod" />
+            Cash on Delivery
+          </label>
+        </div>
+
+        <div id="card-info" class="hidden">
+          <input type="text" placeholder="Card Number" id="card-number" />
+          <input type="text" placeholder="Expiry Date (MM/YY)" id="expiry" />
+          <input type="text" placeholder="CVV" id="cvv" />
+        </div>
+
+        <button type="submit" class="confirm-btn">Place Order</button>
+        <button type="button" onclick="closeModal()" class="cancel-btn">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EmailJS and Checkout Script -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+      emailjs.init("xQGuJ_tKdG5yXA5yV");
+    })();
+  </script>
+
+  <script>
+   const cartItemsContainer = document.getElementById('cart-items');
+const totalElement = document.getElementById('total');
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function renderCart() {
+  cartItemsContainer.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    total += item.price * item.quantity;
+    cartItemsContainer.innerHTML += `
+      <div class="cart-item">
+        <img src="${item.image}" alt="${item.name}" />
+        <div class="item-details">
+          <h3>${item.name}</h3>
+          <p>R${item.price.toFixed(2)}</p>
+          <div>
+            <button onclick="updateQuantity(${index}, -1)">-</button>
+            ${item.quantity}
+            <button onclick="updateQuantity(${index}, 1)">+</button>
+          </div>
+        </div>
+        <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
+      </div>
+    `;
+  });
+
+  totalElement.textContent = `Total: R${total.toFixed(2)}`;
+}
+
+function updateQuantity(index, change) {
+  cart[index].quantity += change;
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+}
+
+function closeModal() {
+  document.getElementById('checkout-modal').classList.add('hidden');
+}
+
+renderCart();
+
+// Show Checkout
+document.querySelector('.checkout-btn').addEventListener('click', () => {
+  if (cart.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
+  document.getElementById('checkout-modal').classList.remove('hidden');
+});
+
+// Handle Checkout Form Submission
+document.getElementById('checkout-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const address = document.getElementById('address').value.trim();
+
+  if (!name || !email || !address) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  const orderItems = cart.map(item => ({
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price.toFixed(2),
+  }));
+
+  let orderTableHTML = `
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="background-color: #f5f5f5;">
+        <th align="left" style="padding: 8px;">Image</th>
+        <th align="left" style="padding: 8px;">Item</th>
+        <th align="center" style="padding: 8px;">Qty</th>
+        <th align="right" style="padding: 8px;">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+`;
+
+cart.forEach(item => {
+  orderTableHTML += `
+    <tr>
+      <td style="padding: 8px;"><img src="${item.image}" alt="${item.name}" width="60" style="border-radius: 5px;" /></td>
+      <td style="padding: 8px;">${item.name}</td>
+      <td align="center" style="padding: 8px;">${item.quantity}</td>
+      <td align="right" style="padding: 8px;">R${item.price.toFixed(2)}</td>
+    </tr>
+  `;
+});
+
+orderTableHTML += `
+    </tbody>
+  </table>
+`;
+
+const orderDetails = {
+  user_name: name,
+  user_email: email,
+  user_address: address,
+  user_total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2),
+  order_html: orderTableHTML,
+  to_email: email
+};
+
+
+  // Send to user
+  emailjs.send("service_gcfdzxl", "template_ph5ho4r", orderDetails)
+    .then(() => {
+      console.log("Confirmation email sent to user");
+    })
+    .catch(err => {
+      console.error("Failed to send email to user", err);
+    });
+
+  // Send to restaurant
+  const restaurantDetails = {
+    ...orderDetails,
+    to_email: "lmukwevho1125@gmail.com", // restaurant email
+  };
+
+  emailjs.send("service_gcfdzxl", "template_ph5ho4r", restaurantDetails)
+    .then(() => {
+      console.log("Email sent to restaurant");
+      alert("Thank you for shpping with Foodhub, your order has been placed and a confirmation email has been sent.");
+    })
+    .catch(err => {
+      console.error("Failed to send email to restaurant", err);
+      alert("Order placed, but failed to send confirmation email.");
+    });
+
+  // Clear cart and close modal
+  cart = [];
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+  closeModal();
+});
+
+// Payment method toggle
+document.querySelectorAll('input[name="payment"]').forEach((input) => {
+  input.addEventListener('change', () => {
+    const cardInfo = document.getElementById('card-info');
+    cardInfo.classList.toggle('hidden', input.value !== 'card');
+  });
+});
+
+  </script>
+
+</body>
+
+</html>

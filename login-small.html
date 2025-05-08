@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login and Sign Up</title>
+  <link rel="stylesheet" href="login2.css"/>
+  <link rel="stylesheet" href="responsive.css">
+  <script src="auth.js"></script>
+  <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+</head>
+<body>
+  <header class="header" id="home">
+    <a href="#" class="logo">Food<span>Hub</span></a>
+    <nav class="navbar">
+      <div id="menu-toggle" class="menu-icon">
+        <i id="hamburger-icon" class="fa fa-bars" aria-hidden="true"></i>
+        <i id="close-icon" class="fa fa-times" aria-hidden="true" style="display: none;"></i>
+      </div>
+      <ul>
+        <li><a href="Fastfood.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="review.html">Reviews</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="form-container" id="login-form">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <div class="password-wrapper">
+            <input type="password" placeholder="Password" id="login-password" required>
+            <i class="fa fa-eye" id="toggle-login-password" style="cursor: pointer;"></i>
+          </div>
+          <div class="rm">
+            <div class="rmb-pass">
+            <label class="remember-pass">
+                <input type="checkbox" id="remember-me" />
+              </label>
+              <h2 class="remember-me-text">Remember Password</h2>
+            </div>
+            <p class="forgotpass">forgotten password</p>
+          </div>
+        <button type="submit">Login</button>
+        <p class="switch-form">Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a></p>
+      </form>
+    </div>
+
+    <div class="form-container" id="signup-form" style="display: none;">
+      <h2>Sign Up</h2>
+      <form id="signupForm">
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <div class="password-wrapper">
+            <input type="password" placeholder="Password" id="signup-password" required>
+            <i class="fa fa-eye" id="toggle-signup-password" style="cursor: pointer;"></i>
+          </div>
+          <div class="password-wrapper">
+            <input type="password" placeholder="Confirm Password" id="confirm-password" required>
+            <i class="fa fa-eye" id="toggle-confirm-password" style="cursor: pointer;"></i>
+          </div>
+          
+        <button type="submit">Sign Up</button>
+        <p class="switch-form">Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    //menu toggle
+    document.addEventListener("DOMContentLoaded", function () {
+  const menuToggle = document.getElementById("menu-toggle");
+  const navbar = document.querySelector(".navbar ul");
+  const hamburgerIcon = document.getElementById("hamburger-icon");
+  const closeIcon = document.getElementById("close-icon");
+
+  menuToggle.addEventListener("click", () => {
+    navbar.classList.toggle("active");
+    hamburgerIcon.style.display = navbar.classList.contains("active") ? "none" : "inline";
+    closeIcon.style.display = navbar.classList.contains("active") ? "inline" : "none";
+  });
+})
+    // Toggle forms
+    document.getElementById("switch-to-signup").onclick = function () {
+      document.getElementById("login-form").style.display = "none";
+      document.getElementById("signup-form").style.display = "block";
+    };
+
+    document.getElementById("switch-to-login").onclick = function () {
+      document.getElementById("signup-form").style.display = "none";
+      document.getElementById("login-form").style.display = "block";
+    };
+
+    // Sign up logic
+    document.getElementById("signupForm").onsubmit = function (e) {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      // Save to localStorage
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      if (users[email]) {
+        alert("Account already exists.");
+      } else {
+        users[email] = password;
+        localStorage.setItem("users", JSON.stringify(users));
+        alert("Account created. Please login.");
+        document.getElementById("signupForm").reset();
+        document.getElementById("switch-to-login").click();
+      }
+    };
+
+    // Login logic
+    document.getElementById("loginForm").onsubmit = function (e) {
+  e.preventDefault();
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+  if (users[email] && users[email] === password) {
+    localStorage.setItem("loggedInUser", email); // ✅ THIS IS MISSING
+    alert("Login successful!");
+    window.location.href = "Fastfood.html"; // or wherever you want
+  } else {
+    alert("Invalid email or password.");
+  }
+};
+
+    document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("login-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+  const loggedInUser = localStorage.getItem("loggedInUser");
+
+  if (loggedInUser) {
+    if (loginBtn) loginBtn.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "inline-block";
+  } else {
+    if (loginBtn) loginBtn.style.display = "inline-block";
+    if (logoutBtn) logoutBtn.style.display = "none";
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("loggedInUser");
+      alert("You have been logged out.");
+      window.location.href = "login-small.html";
+    });
+  }
+});
+function togglePasswordVisibility(toggleId, inputId) {
+  const toggle = document.getElementById(toggleId);
+  const input = document.getElementById(inputId);
+
+  toggle.addEventListener("click", () => {
+    const isPassword = input.type === "password";
+    input.type = isPassword ? "text" : "password";
+    toggle.className = isPassword ? "fa fa-eye-slash" : "fa fa-eye";
+  });
+}
+
+togglePasswordVisibility("toggle-login-password", "login-password");
+togglePasswordVisibility("toggle-signup-password", "signup-password");
+togglePasswordVisibility("toggle-confirm-password", "confirm-password");
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-image: url(assets/images/bkg.jfif);
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  margin: 0;
+  place-content: center;
+}
+
+/* Header Styles */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  background: rgb(185, 180, 180);
+  z-index: 1000;
+}
+
+.header .logo {
+  color: black;
+  font-size: 32px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.header .logo span {
+  color: red;
+}
+
+.header .navbar a {
+  color: black;
+  text-decoration: none;
+  margin-left: 35px;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.navbar ul {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Activity Section Styles */
+.activity-section {
+  display: flex;
+  color: rgb(180, 3, 3);
+  font-size: 25px;
+  margin-left: 20px;
+  padding: 10px;
+  border-radius: 50%;
+  transition: 0.3s;
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.activity-section i:hover {
+  color: #007bff;
+  transform: scale(1.2);
+  transition: all 0.3s ease-in-out;
+}
+.menu-icon {
+  font-size: 28px;
+  display: none;
+  cursor: pointer;
+  color: black;
+}
+
+#hamburger-icon {
+  display: inline;
+}
+
+#close-icon {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .navbar ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: #f0f0f0;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    padding: 20px;
+    z-index: 1001;
+  }
+
+  .navbar ul.active {
+    display: flex;
+  }
+
+  .navbar a {
+    margin: 10px 0;
+  }
+
+  .Activity-section, .btn, .btn1 {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-links ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+
+  .navbar-links ul li {
+    display: block;
+  }
+
+  .navbar-links ul li a {
+    display: block;
+    padding: 10px;
+  }
+
+  .Activity-section {
+    display: none;
+  }
+
+  .btn, .btn1 {
+    display: none;
+  }
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.switch-form {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.switch-form a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.switch-form a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+}
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.password-wrapper i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+}
+.remember-pass{
+  font-size: 12px;
+  font-weight: 300;
+    font-size: 14px;
+    display: inline-flex;
+    text-align: left;
+    align-items: start;
+    gap: 8px;            
+    cursor: pointer;
+    color: #333;
+    justify-content: start;
+  
+}
+.rmb-pass{
+display: flex;
+flex-direction: row;
+gap:5px;
+cursor: pointer;
+}
+.rm{
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  gap:95px;
+  justify-content: end;
+}
+.remember-me-text{
+  font-size: 12px;
+  font-weight: 300;
+  text-align: end;
+  align-items: end;
+  justify-content: end;
+}
+.forgotpass{
+  font-size: 12px;
+  font-weight: 300;
+  text-align: end;
+  align-items: end;
+  justify-content: end;
+  cursor: pointer;
+}
+ p:hover {
+  color: blue;
+}

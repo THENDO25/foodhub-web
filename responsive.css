@@ -1,0 +1,155 @@
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .navbar-toggle {
+      display: flex;
+    }
+  
+    .navbar-links ul {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+  
+    .navbar-links ul li {
+      display: block;
+    }
+  
+    .navbar-links ul li a {
+      display: block;
+      padding: 10px;
+    }
+  
+    .Activity-section {
+      display: none;
+    }
+  
+    .btn, .btn1 {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+      }
+      .categories {
+        flex-direction: column;
+        align-items: center;
+      }
+      .navbar ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: #f0f0f0;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        padding: 20px;
+        z-index: 1001;
+      }
+    
+      .navbar ul.active {
+        display: flex;
+      }
+    
+      .navbar a {
+        margin: 10px 0;
+      }
+    
+      .Activity-section{
+        display: none;
+      }
+    .about-us {
+      padding: 10px;
+      font-size: 1.2rem;
+      margin: 20px auto;
+    }
+  
+    .aboutus-container {
+      padding: 10px;
+      height: auto;
+      margin-top: 50px;
+    }
+  
+    .about-content {
+      margin-top: 100px;
+      padding: 10px;
+    }
+    .menu-grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .story-section {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .story-text, .story-section img {
+      width: 100%;
+      max-width: 100%;
+    }
+  
+    .story-text h2, .story-text h3 {
+      font-size: 1.5rem;
+    }
+  
+    .story-text p {
+      font-size: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .header {
+      padding: 10px;
+    }
+  
+    .aboutus-container {
+      padding: 10px;
+      margin-top: 50px;
+    }
+  
+    .menu-grid,.categories {
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    .landing-page {
+        height: 60vh;
+      }
+      .landing-text {
+        max-width: 300px;
+        padding: 10px;
+      }
+      .landing-text h1 {
+        font-size: 2rem;
+      }
+      .landing-text p {
+        font-size: 1rem;
+      }
+  }
+  
+  @media (min-width: 1200px) {
+    footer {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  
+  /* For medium devices */
+  @media (min-width: 769px) and (max-width: 992px) {
+    .about-us {
+      font-size: 1.5rem;
+      margin: 30px auto;
+    }
+  }
+  
+  /* For large devices */
+  @media (min-width: 993px) {
+    .about-us {
+      font-size: 1.8rem;
+      margin: 40px auto;
+    }
+  }

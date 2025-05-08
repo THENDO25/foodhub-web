@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Fastfood.css">
+    <link rel="stylesheet" href="responsive.css">
+    <script src="Fastfood.js"></script>
+    <script src="menu.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css">
+    <title>African_foodhub</title>
+  </head>
+
+  <body>
+  </head>
+  <body>
+    <header class="header" id="home">
+      <a href="#" class="logo">Food<span>Hub</span></a>
+      <nav class="navbar">
+        <div id="menu-toggle" class="menu-icon">
+          <i id="hamburger-icon" class="fa fa-bars" aria-hidden="true"></i>
+          
+          <i id="close-icon" class="fa fa-times" aria-hidden="true"
+            style="display: none;"></i> 
+        </div>
+        <div class="navbar-links">
+          <ul>
+            <li><a href="Fastfood.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="review.html">Reviews</a></li>
+            <li><a href="cart.html">Cart</a></li>
+
+          </ul>
+        </div>
+      </nav>
+      <div class="Activity-section">
+        <a href="cart.html"><i class='bx bx-cart'></i></a>
+      </div>
+      <a href="login-small.html" class="btn" id="login-btn">Login</a>
+      <a href="#" class="btn" id="logout-btn" style="display: none;">Log out</a>
+    </header>
+    
+    <section>
+        <div class="landing-page">
+            <div class="landing-text">
+              <h1>Feeling Hungry?</h1>
+              <p>Explore our vast delicious Food, Drinks, and Snacks. Come
+                Hungry,
+                Leave Happy.</p>
+              <p>Savor the Flavor, Experience the Difference!</p>
+              <p>Order Now, Enjoy at Home!</p>
+            </div>
+          </div>
+        </div>
+        <!--special-->
+
+        <div class="Our-Specials" id="home">
+          <div class="special-menu">
+            <h1 class="special-heading">Our Special<br>
+              <p>Save <span>BIG</span> with our special and enjoy our mouth
+                watering food!.</p>
+            </h1>
+            <div id="custom-alert" class="custom-alert hidden">
+              <p>Added to cart</p>
+            </div>
+            <div class="special-container">
+              <!-- Special 1 -->
+              <div class="special-box">
+                <img src="assets/images/BREAKFAST/tacos.jpeg"
+                  alt="Breakfast Image">
+                <div class="innertxt">
+                  <h2>Taco</h2>
+                  <h1 class="discription">Best taste pineappple dew caoke baked
+                    with love</h1>
+                </div>
+                <del>was R89.99</del>
+
+                <div class="links">
+                  <p class="total-price-1">Total: R68 <span
+                      id="total-price-1"></span></p>
+                  <div class="Activity-section-menu">
+                    <i class='bx bxs-food-menu view-popup'
+                      data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                      data-title="Beef Stew"
+                      data-price="R95"
+                      data-description="Enjoy our tasty food made with love"
+                      data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+                    </i>
+                    <i class='bx bx-heart'></i>
+                    <i class='bx bx-cart'
+                      onclick="addToCart('Tacos', 67.99, 'assets/images/BREAKFAST/tacos.jpeg')"></i>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Special 2 -->
+              <div class="special-box">
+                <img
+                  src="assets/images/main-dish/hot_wings_dish_on_a_black_background.jpeg"
+                  alt="Breakfast Image">
+                <div class="innertxt">
+                  <h2>HotWings</h2>
+                  <h1 class="discription">Best taste pineappple dew caoke baked
+                    with love</h1>
+                </div>
+                <del>was R95.00</del>
+
+                <div class="links">
+                  <p class="total-price-1">Total: R74<span
+                      id="total-price-1"></span></p>
+                  <div class="Activity-section-menu">
+                    <i class='bx bxs-food-menu view-popup'
+                      data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                      data-title="Beef Stew"
+                      data-price="R95"
+                      data-description="Enjoy our tasty food made with love"
+                      data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+                    </i>
+                    <i class='bx bx-heart'></i>
+                    <i class='bx bx-cart'
+                      onclick="addToCart('Shisa combo', 73.98, 'assets/images/main-dish/hot_wings_dish_on_a_black_background.jpeg')"></i>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Special 3 -->
+              <div class="special-box">
+                <img src="assets/images/desserts/chocolate mousse.jpeg"
+                  alt="Breakfast Image">
+                <div class="innertxt">
+                  <h2>chocolate mousse</h2>
+                  <h1 class="discription">Best taste pineappple dew caoke baked
+                    with love</h1>
+                </div>
+                <del>was R71</del>
+
+                <div class="links">
+                  <p class="total-price-1">Total: R43<span
+                      id="total-price-1"></span></p>
+                  <div class="Activity-section-menu">
+                    <i class='bx bxs-food-menu view-popup'
+                      data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                      data-title="Beef Stew"
+                      data-price="R95"
+                      data-description="Enjoy our tasty food made with love"
+                      data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+                    </i>
+                    <i class='bx bx-heart'></i>
+                    <i class='bx bx-cart'
+                      onclick="addToCart('Chocolatei', 43.98, 'assets/images/Desserts/chocolate mousse.jpeg')"></i>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Special 4 -->
+              <div class="special-box">
+                <img src="assets/images/desserts/pineappple.jpeg"
+                  alt="Breakfast Image">
+                <div class="innertxt">
+                  <h2>pineappple dew cake</h2>
+                  <h1 class="discription">Best taste pineappple dew caoke baked
+                    with love</h1>
+                </div>
+                <del>was R56</del>
+
+                <div class="links">
+                  <p class="total-price-1">Total: R23 <span
+                      id="total-price-1"></span></p>
+                  <div class="Activity-section-menu">
+                    <i class='bx bxs-food-menu view-popup'
+                      data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg"
+                      data-title="Beef Stew"
+                      data-price="R95"
+                      data-description="Enjoy our tasty food made with love"
+                      data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+                    </i>
+                    <i class='bx bx-heart'></i>
+                    <i class='bx bx-cart'
+                      onclick="addToCart('pineappple dew cake', 36.99, 'assets/images/desserts/pineappple.jpeg')"></i>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <!--favourite-->
+          <div id="favorites-popup" class="favorites-popup hidden">
+            <h2>Your Favorites</h2>
+            <ul id="favorites-list"></ul>
+            <button onclick="closeFavorites()" class="close-btn">Close</button>
+          </div>
+          <div>
+            <div id="custom-alert" class="custom-alert hidden">
+              <p>Added item to favorite ❤️</p>
+            </div>
+            <!--categories-->
+            <h2 class="browse"> Browse our categories and shop with us now!</h2>
+            <div class="categories">
+              <div>
+                <div class="imagescat">
+                  <h2 class="category-h2" href="menu.html">Breakfast</h2>
+                  <img class="cat-images"
+                    src="assets/images/BREAKFAST/ham_and_eggs_on_a_black_background.jpeg"
+                    alt="Breakfast Image">
+
+                </div>
+                <button class="shop-now"><a href="menu.html">Shop
+                    Now!</a></button>
+              </div>
+              <!--maindish-->
+              <div>
+                <div class="imagescat">
+                  <h2 class="category-h2">Meal</h2>
+                  <img class="cat-images"
+                    src="assets/images/main-dish/hot_wings_dish_on_a_black_background.jpeg"
+                    alt="main-dish">
+
+                </div>
+                <button class="shop-now"><a href="main-dish.html">Shop
+                    Now!</a></button>
+              </div>
+              <!--dessert-->
+              <div>
+                <div class="imagescat">
+                  <h2 class="category-h2">Dessert</h2>
+                  <img class="cat-images"
+                    src="assets/images/desserts/mint to be Ice cream.jpeg"
+                    alt="dessert">
+
+                </div>
+                <button class="shop-now"><a href="desserts.html">Shop
+                    Now!</a></button>
+              </div>
+              <!--S%D-->
+              <div>
+                <div class="imagescat">
+                  <h2 class="category-h2">Snacks</h2>
+                  <img class="cat-images"
+                    src="assets/images/801dbe_028521b4fa704b00bdab56638a28fee3~mv2.jpg"
+                    alt="Snacks">
+
+                </div>
+                <button class="shop-now"><a href="snd.html">Shop
+                    Now!</a></button>
+              </div>
+            </div>
+          </div>
+          <!--popup-->
+          <div class="popup" id="global-popup">
+            <div class="image-container">
+              <div class="image">
+                <img id="popup-img" src alt="Dish Image">
+              </div>
+              <button type="button" id="close-popup">Close</button>
+            </div>
+            <div class="details">
+              <div class="name-and-price">
+                <h2 id="popup-title">Dish Name</h2>
+                <h2 id="popup-price">Price</h2>
+              </div>
+              <p id="popup-description"></p>
+
+              <p id="popup-details"></p>
+              <div class="wrapper">
+                <div class="popup-quantity-container">
+                  <h2>Quantity</h2>
+                  <span class="minus">-</span>
+                  <span class="number">1</span>
+                  <span class="plus">+</span>
+                </div>
+                <h2 id="popup-total">TOTAL</h2>
+                <button type="button1" id="button1" class="addtocart">ADD TO
+                  CART</button>
+              </div>
+              <div class="whitelist-container">
+                <i class='bx bx-heart favourite'>Add to favourite</i>
+                <div class="social-links">
+                  <a href="#"><i class='bx bxl-facebook'></i></a>
+                  <a href="#"><i class='bx bxl-twitter'></i></a>
+                  <a href=""><i class='bx bxl-instagram'></i></a>
+                  <a href="#"><i class='bx bxl-whatsapp'></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!--footer-->
+        <footer>
+          <div class="discount">
+            <h2>Discount</h2>
+            <p>20% OFF</p>
+          </div>
+          <div class="Support">
+            <h3>Support</h3>
+            <p> Email us at:<span> thendomukwevho1125@gmail.com</span></p>
+            <p>Call or whatsapp <span>0679104109</span></p>
+          </div>
+          <div class="Menu">
+            <h2><a href>Menu</a></h2>
+            <p><a href="menu.html">Breakfast</a></p>
+            <p><a href="main-dish.html">Main dish</a></p>
+            <p><a href="desserts.html">Dessert</a></p>
+            <p><a href="snd.html">Snacks and Drinks</a></p>
+          </div>
+          <div class="foodhub-logo">
+            <h1>Food<span>Hub</span></a>
+            <div class="social-links">
+              <a href="https://www.facebook.com/" target="_blank">
+                <i class='bx bxl-facebook'></i>
+              </a>
+              <a href="https://twitter.com" target="_blank">
+                <i class='bx bxl-twitter'></i>
+              </a>
+              <a href="https://www.instagram.com/" target="_blank">
+                <i class='bx bxl-instagram'></i>
+              </a>
+            </div>
+
+          </div>
+        </footer>
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const menuToggle = document.getElementById("menu-toggle");
+    const navbar = document.querySelector(".navbar ul");
+
+    menuToggle.addEventListener("click", () => {
+      navbar.classList.toggle("active");
+    });
+  });
+      window.addEventListener('DOMContentLoaded', () => {
+        const currentPage = window.location.pathname.split('/').pop(); // get current filename
+        const links = document.querySelectorAll('.navbar a');
+
+        links.forEach(link => {
+          if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+          }
+        });
+      });
+      // Open popup
+      document.querySelectorAll('.view-popup').forEach(icon => {
+    icon.addEventListener('click', () => {
+      const popup = document.getElementById('global-popup');
+      document.getElementById('popup-img').src = icon.dataset.image;
+      document.getElementById('popup-title').textContent = icon.dataset.title;
+      document.getElementById('popup-price').textContent = icon.dataset.price;
+      document.getElementById('popup-description').textContent = icon.dataset.description;
+      document.getElementById('popup-details').textContent = icon.dataset.details;
+      document.getElementById('popup-total').textContent = icon.dataset.price;
+
+      popup.style.display = 'block';
+      setTimeout(() => popup.classList.add('show'), 10);
+    });
+  });
+
+  // Close popup
+  document.getElementById('close-popup').addEventListener('click', () => {
+    const popup = document.getElementById('global-popup');
+    popup.classList.remove('show');
+    setTimeout(() => popup.style.display = 'none', 300);
+  });
+    </script>
+
+      </body>
+
+    </html>

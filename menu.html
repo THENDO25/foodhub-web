@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="menu.css">
+  <link rel="stylesheet" href="responsive.css">
+  <script src="menu.js"></script>
+  <script src="cart.js"></script>
+  <script src="auth.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css">
+  <title>African_FF</title>
+</head>
+
+<body>
+  <section>
+
+    <header class="header" id="home">
+      <a href="#" class="logo">Food<span>Hub</span></a>
+      <nav class="navbar">
+        <div id="menu-toggle" class="menu-icon">
+          <i id="hamburger-icon" class="fa fa-bars" aria-hidden="true"></i>  <!-- Hamburger Icon -->
+          <i id="close-icon" class="fa fa-times" aria-hidden="true" style="display: none;"></i>  <!-- Close (X) Icon -->
+        </div>
+        <div class="navbar-links">
+          <ul>
+            <li><a href="Fastfood.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="review.html">Reviews</a></li>
+            <li><a href="cart.html">Cart</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="Activity-section">
+        <i class='bx bx-heart'></i>
+        <a href="cart.html"><i class='bx bx-cart'></i></a>
+      </div>
+      <a href="login-small.html" class="btn" id="login-btn">Login</a>
+      <a href="#" class="btn" id="logout-btn" style="display: none;">Log out</a>
+    </header>
+
+  <section id="menu-section" class="dishes">
+    <h1>Explore our Dishes</h1>
+   
+      <nav class="dish-navbar">
+        <ul>
+          <li><a href="menu.html">Breakfast</a></li>
+          <li><a href="main-dish.html">Meal</a></li>
+          <li><a href="desserts.html">Desserts</a></li>
+          <li><a href="snd.html">Snacks & Drinks</a></li>
+        </ul>
+      </nav>
+    
+  <!--notification-->
+  <div id="custom-alert" class="custom-alert hidden">
+    <p>Added item to favorite ❤️</p>
+  </div>
+  <div id="custom-alert" class="custom-alert hidden">
+    <p>Added to cart</p>
+  </div>
+  <div class="container">
+    <div class="menu-grid-container">
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/strata.jpeg" alt="Breakfast Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Strata</h2>
+            <h2 class="name-and-price">R140</h2>
+          </div>
+          <p>Enjoy our tasty bread filled with cheese</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart' onclick="addToCart('Strata', 140.98, 'assets/images/BREAKFAST/strata.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--item 2-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/tacos.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Tacos</h2>
+            <h2 class="name-and-price">R89.99</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart' onclick="addToCart('Tacos', 89.98, 'assets/images/BREAKFAST/tacos.jpeg')"></i>
+
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM3-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/omelette.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Omelette</h2>
+            <h2 class="name-and-price">R96</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart' onclick="addToCart('Omelette', 95.99, 'assets/images/BREAKFAST/omelette.jpeg')"></i>
+
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM4-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/scrambled_eggs.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">BunnyEggs</h2>
+            <h2 class="name-and-price">R67</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('Scrambled_eggs', 67.99, 'assets/images/BREAKFAST/scrambled_eggs.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM5-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/avocado_toast.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">AvoToast</h2>
+            <h2 class="name-and-price">R60</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('Avocado_toast', 59.99, 'assets/images/BREAKFAST/avocado_toast.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM6-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/pancakes.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Pancakes</h2>
+            <h2 class="name-and-price">R70</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart' onclick="addToCart('Pancakes', 70.99, 'assets/images/BREAKFAST/Pancakes.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM7-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/egg_benedict.jpeg " alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Benedict</h2>
+            <h2 class="name-and-price">R81</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('Eggs Benedict', 80.99, 'assets/images/BREAKFAST/egg_benedict.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM8-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/chocolate_chip.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">waffles</h2>
+            <h2 class="name-and-price">R59</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('chip_waffles', 58.99, 'assets/images/BREAKFAST/chocolate_chip.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM9-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/sausage_and_eggs.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Sausages</h2>
+            <h2 class="name-and-price">R89</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('sausage_and_eggs', 88.99, 'assets/images/BREAKFAST/sausage_and_eggs.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM10-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/breakfast_sausage_sandwich_on_a_black_background.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Burger</h2>
+            <h2 class="name-and-price">R120</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('Burger', 110.99, 'assets/images/BREAKFAST/breakfast_sausage_sandwich_on_a_black_background.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM10-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/ham_and_eggs_on_a_black_background.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">Ham&Eggs</h2>
+            <h2 class="name-and-price">R45</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('Bacon and Eggs', 44.99, 'assets/images/BREAKFAST/ham_and_eggs_on_a_black_background.jpeg')"></i>
+
+
+          </div>
+        </div>
+      </div>
+      <!--ITEM11-->
+      <div class="breakfast">
+        <img src="assets/images/BREAKFAST/bunny_chow_on_a_black_background.jpeg" alt="Main Dish Image">
+        <div class="innertxt">
+          <div class="name-and-price">
+            <h2 class="name-and-price">BunnyChow</h2>
+            <h2 class="name-and-price">R30</h2>
+          </div>
+          <p>Enjoy our tasty food made with love</p>
+          <div class="Activity-section-menu">
+            <i class='bx bxs-food-menu view-popup'
+              data-image="assets/images/main-dish/beef_stew_with_pap_on_a_black.jpeg" data-title="Beef Stew"
+              data-price="R95" data-description="Enjoy our tasty food made with love"
+              data-details="Beefy Bliss: Savor our tender beef strips, cooked to perfection and served with a rich demiglace - a flavor explosion!">
+            </i>
+            <i class='bx bx-heart'></i>
+            <i class='bx bx-cart'
+              onclick="addToCart('Bunny Chow', 29.99, 'assets/images/BREAKFAST/bunny_chow_on_a_black_background.jpeg')"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!--popup-->
+  <div class="popup" id="global-popup">
+    <div class="image-container">
+      <div class="image">
+        <img id="popup-img" src="" alt="Dish Image">
+      </div>
+      <button type="button" id="close-popup">Close</button>
+    </div>
+    <div class="details">
+      <div class="name-and-price">
+        <h2 id="popup-title">Dish Name</h2>
+        <h2 id="popup-price">Price</h2>
+      </div>
+      <p id="popup-description"></p>
+
+      <p id="popup-details"></p>
+      <div class="wrapper">
+        <div class="popup-quantity-container">
+          <h2>Quantity</h2>
+          <span class="minus">-</span>
+          <span class="number">1</span>
+          <span class="plus">+</span>
+        </div>
+        <h2 id="popup-total">TOTAL</h2>
+        <button type="button1" id="button1" class="addtocart">ADD TO CART</button>
+      </div>
+      <div class="whitelist-container">
+        <i class='bx bx-heart favourite'>Add to favourite</i>
+        <div class="social-links">
+          <a href="#"><i class='bx bxl-facebook'></i></a>
+          <a href="#"><i class='bx bxl-twitter'></i></a>
+          <a href="#"><i class='bx bxl-instagram'></i></a>
+          <a href="#"><i class='bx bxl-whatsapp'></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--favourite-->
+  <div id="favorites-popup" class="favorites-popup hidden">
+    <h2>Your Favorites</h2>
+    <ul id="favorites-list"></ul>
+    <button onclick="closeFavorites()" class="close-btn">Close</button>
+  </div>
+  <!--our story-->
+  <div class="story-section">
+    <div class="story-text">
+      <h2 class="Our-story">Our Story and Vision</h2>
+      <h3>Igniting Passion, Savoring Tradition, Serving Love: Our story</h3>
+      <p>
+        At Food<span>Hub</span>, we're passionate about serving more than just great food.
+        We are dedicated to sharing love, care, and the experience you will never forget.
+        Our story began with a simple idea to bring people together through the language of delicious food.<br><br>
+        Served with quality, freshness, and warmth, our restaurant has grown to be the place where friends and families gather to create unforgettable memories.<br><br>
+        Enjoy our meal and forever lasting memories.<br><br>
+        <span>COME AND JOIN US NOW</span>
+      </p>
+    </div>
+    <img src="assets/images/CHEF4.png" alt="Chef image">
+  </div>
+    <!--search-->
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="Search your favorite dish..." />
+      <button type="submit" onclick="searchDishes()"><i class="fas fa-search"></i></button>
+    </div>
+
+  </section>
+  
+  <footer>
+    <div class="discount">
+      <h2>Discount</h2>
+      <p>20% OFF</p>
+    </div>
+    <div class="Support">
+      <h3>Support</h3>
+      <p> Email us at:<span> thendomukwevho1125@gmail.com</span></p>
+      <p>Call or whatsapp <span>0679104109</span></p>
+    </div>
+    <div class="Menu">
+      <h2><a href="">Menu</a></h2>
+      <p><a href="menu.html">Breakfast</a></p>
+      <p><a href="main-dish.html">Main dish</a></p>
+      <p><a href="desserts.html">Dessert</a></p>
+      <p><a href="snd.html">Snacks and Drinks</a></p>
+    </div>
+    <div class="foodhub-logo">
+      <h1>Food<span>Hub</span></a>
+        <div class="social-links">
+          <a href="https://www.facebook.com/" target="_blank">
+            <i class='bx bxl-facebook'></i>
+          </a>
+          <a href="https://twitter.com" target="_blank">
+            <i class='bx bxl-twitter'></i>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank">
+            <i class='bx bxl-instagram'></i>
+          </a>
+        </div>
+
+    </div>
+  </footer>
+
+  <!--script-->
+  <script>
+      document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.navbar ul');
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+    });
+  });
+    //active dish navbar
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll(".dish-navbar a");
+
+      navLinks.forEach(link => {
+        const linkPage = link.getAttribute("href");
+        if (linkPage === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentPage = window.location.pathname.split('/').pop(); // get current filename
+      const links = document.querySelectorAll('.navbar a');
+
+      links.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+          link.classList.add('active');
+        }
+      });
+    });
+    // Open popup
+    document.querySelectorAll('.view-popup').forEach(icon => {
+      icon.addEventListener('click', () => {
+        const popup = document.getElementById('global-popup');
+        document.getElementById('popup-img').src = icon.dataset.image;
+        document.getElementById('popup-title').textContent = icon.dataset.title;
+        document.getElementById('popup-price').textContent = icon.dataset.price;
+        document.getElementById('popup-description').textContent = icon.dataset.description;
+        document.getElementById('popup-details').textContent = icon.dataset.details;
+        document.getElementById('popup-total').textContent = icon.dataset.price;
+
+        popup.style.display = 'block';
+        setTimeout(() => popup.classList.add('show'), 10);
+      });
+    });
+
+    // Close popup
+    document.getElementById('close-popup').addEventListener('click', () => {
+      const popup = document.getElementById('global-popup');
+      popup.classList.remove('show');
+      setTimeout(() => popup.style.display = 'none', 300);
+    });
+
+    function searchDishes() {
+  const input = document.getElementById('searchInput').value.toLowerCase();
+  const dishes = document.querySelectorAll('.breakfast');
+  let anyVisible = false;
+
+  dishes.forEach(dish => {
+    const title = dish.querySelector('.name-and-price').textContent.toLowerCase();
+    if (title.includes(input)) {
+      dish.style.display = 'block';
+      dish.classList.add('search-match');
+      anyVisible = true;
+    } else {
+      dish.style.display = 'none';
+      dish.classList.remove('search-match');
+    }
+  });
+
+  const message = document.getElementById('no-results-message');
+  if (message) {
+    message.style.display = anyVisible ? 'none' : 'block';
+  }
+}
+  </script>
+
+
+</body>
+
+</html>
