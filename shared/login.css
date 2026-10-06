@@ -277,3 +277,6 @@ cursor: pointer;
  p:hover {
   color: blue;
 }
+.welcome_admin h3 {
+    color: white;
+}
