@@ -3,102 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login and Sign Up</title>
-  <link rel="stylesheet" href="login.css"/>
+  <title>Admin Login | FoodHub</title>
   <link rel="stylesheet" href="../shared/navbar.css"/>
-  <link rel="stylesheet" href="../shared/responsive.css">
-  <link rel="stylesheet" href="../shared/login.css">
-  <script src="auth.js"></script>
+  <link rel="stylesheet" href="../shared/login.css"/>
+  <link rel="stylesheet" href="../shared/responsive.css"/>
   <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="../shared/navbar.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css">
+  <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css">
+  <script src="../shared/navbar.js" defer></script>
 </head>
+
 <body>
   <header class="header" id="home">
     <a href="../home/index.html" class="logo">Food<span>Hub</span></a>
+
     <nav class="navbar">
       <div id="menu-toggle" class="menu-icon" aria-label="Toggle navigation">
         <i id="hamburger-icon" class="fa fa-bars" aria-hidden="true"></i>
-        <i id="close-icon" class="fa fa-times" aria-hidden="true" style="display: none;"></i>
+        <i id="close-icon" class="fa fa-times" aria-hidden="true"></i>
       </div>
     </nav>
   </header>
-  <div class="welcome_admin">
-    <h3>Welcome Admin</h3>
-  </div>
-<!--sign in design-->
+
   <div class="container">
-    <div class="form-container" id="login-form">
-      <h2>Login</h2>
-      <form id="loginForm">
-        <input type="email" id="login-email" placeholder="Email" required>
+    <div class="form-container">
+      <h2>Admin Login</h2>
+
+      <form id="admin-login-form">
+        <input
+          type="email"
+          id="admin-email"
+          placeholder="Email"
+          required
+        >
+
         <div class="password-wrapper">
-            <input type="password" placeholder="Password" id="login-password" required>
-            <i class="fa fa-eye" id="toggle-login-password" style="cursor: pointer;"></i>
-          </div>
-          <div class="rm">
-            <div class="rmb-pass">
-            <label class="remember-pass">
-                <input type="checkbox" id="remember-me" />
-              </label>
-              <h2 class="remember-me-text">Remember Password</h2>
+          <input
+            type="password"
+            id="admin-password"
+            placeholder="Password"
+            required
+          >
+          <i
+            class="fa fa-eye"
+            id="toggle-admin-password"
+            style="cursor: pointer;"
+            aria-label="Show password"
+          ></i>
+        </div>
+            <div class="rm">
+                <label class="remember-pass">
+                    <input type="checkbox" id="remember-me">
+                    <span class="remember-me-text">Remember Password</span>
+                </label>
+
+                <p class="forgotpass">Forgotten password</p>
             </div>
-            <p class="forgotpass">forgotten password</p>
-          </div>
+
         <button type="submit">Sign in</button>
-        <p class="switch-form">Please Sign In</p>
+
+        <p class="switch-form" id="login-error"></p>
       </form>
     </div>
   </div>
+  <script>
+    document.getElementById("admin-login-form").addEventListener("submit", function(event) {
+        event.preventDefault();
 
-<!--SCRIPT-->
-<script>
-// Admin login
-if (email === "admin@foodhub.com" && password === "admin123") {
-  localStorage.setItem("loggedInUser", email);
-  localStorage.setItem("userRole", "admin");
+        const email = document.getElementById("admin-email").value.trim().toLowerCase();
+        const password = document.getElementById("admin-password").value;
+        const error = document.getElementById("login-error");
 
-  alert("Admin login successful!");
-  window.location.href = "../admin/index.html";
-  return;
-}
+        if (email === "admin@foodhub.com" && password === "admin123") {
 
-  document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("login-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-  const loggedInUser = localStorage.getItem("loggedInUser");
+            localStorage.setItem("loggedInUser", email);
+            localStorage.setItem("userRole", "admin");
 
-  if (loggedInUser) {
-    if (loginBtn) loginBtn.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-  } else {
-    if (loginBtn) loginBtn.style.display = "inline-block";
-    if (logoutBtn) logoutBtn.style.display = "none";
-  }
+            window.location.href = "index.html";
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("loggedInUser");
-      alert("You have been logged out.");
-      window.location.href = "login.html";
+        } else {
+            error.textContent = "Invalid admin email or password.";
+            error.style.color = "red";
+        }
     });
-  }
-});
-function togglePasswordVisibility(toggleId, inputId) {
-  const toggle = document.getElementById(toggleId);
-  const input = document.getElementById(inputId);
-
-  toggle.addEventListener("click", () => {
-    const isPassword = input.type === "password";
-    input.type = isPassword ? "text" : "password";
-    toggle.className = isPassword ? "fa fa-eye-slash" : "fa fa-eye";
-  });
-}
-
-togglePasswordVisibility("toggle-login-password", "login-password");
-togglePasswordVisibility("toggle-signup-password", "signup-password");
-togglePasswordVisibility("toggle-confirm-password", "confirm-password");
-
-  </script>
+</script>
 </body>
 </html>

@@ -246,37 +246,50 @@ button:hover {
     justify-content: start;
   
 }
-.rmb-pass{
-display: flex;
-flex-direction: row;
-gap:5px;
-cursor: pointer;
+.remember-pass {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 300;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
 }
-.rm{
-  text-align: left;
-  display: flex;
-  flex-direction: row;
-  gap:95px;
-  justify-content: end;
+
+.remember-pass input {
+    width: auto;
+    margin: 0;
 }
-.remember-me-text{
-  font-size: 12px;
-  font-weight: 300;
-  text-align: end;
-  align-items: end;
-  justify-content: end;
+
+.remember-me-text {
+    font-size: 12px;
+    font-weight: 300;
+    margin: 0;
 }
-.forgotpass{
-  font-size: 12px;
-  font-weight: 300;
-  text-align: end;
-  align-items: end;
-  justify-content: end;
-  cursor: pointer;
+
+.rm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.forgotpass {
+    font-size: 12px;
+    font-weight: 300;
+    margin: 0;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.forgotpass:hover {
+    color: blue;
 }
  p:hover {
   color: blue;
 }
-.welcome_admin h3 {
+.welcome-message h3 {
     color: white;
 }

@@ -1,3 +1,12 @@
+// Admin access protection
+const loggedInUser = localStorage.getItem("loggedInUser");
+const userRole = localStorage.getItem("userRole");
+
+if (loggedInUser !== "admin@foodhub.com" || userRole !== "admin") {
+  window.location.replace("login.html");
+  throw new Error("Admin authentication required.");
+}
+
 const ORDER_KEY = 'foodhubAdminOrders';
 const PRODUCT_KEY = 'foodhubAdminProducts';
 const CUSTOMER_KEY = 'foodhubAdminCustomers';
@@ -64,7 +73,9 @@ document.querySelectorAll('[data-section-target]').forEach(button => button.addE
 document.getElementById('mobile-menu').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
 document.getElementById('admin-logout').addEventListener('click', () => {
   if (confirm('Log out of the admin dashboard?')) {
-    window.location.href = '../home/index.html';
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('userRole');
+    window.location.href = 'login.html';
   }
 });
 
