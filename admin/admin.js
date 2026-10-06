@@ -3,7 +3,7 @@ const loggedInUser = localStorage.getItem("loggedInUser");
 const userRole = localStorage.getItem("userRole");
 
 if (loggedInUser !== "admin@foodhub.com" || userRole !== "admin") {
-  window.location.replace("login.html");
+  window.location.replace("../auth/login.html");
   throw new Error("Admin authentication required.");
 }
 
@@ -75,7 +75,7 @@ document.getElementById('admin-logout').addEventListener('click', () => {
   if (confirm('Log out of the admin dashboard?')) {
     localStorage.removeItem('loggedInUser');
     localStorage.removeItem('userRole');
-    window.location.href = 'login.html';
+    window.location.href = '../auth/login.html';
   }
 });
 

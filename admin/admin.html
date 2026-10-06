@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FoodHub administrator dashboard">
+  <title>FoodHub Admin Dashboard</title>
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="admin-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="brand">
+        <a href="../home/index.html" class="brand-link">
+          Food<span>Hub</span>
+        </a>
+
+        <span class="admin-badge">ADMIN</span>
+      </div>
+
+      <!-- Sidebar navigation -->
+      <nav class="side-nav" aria-label="Admin navigation">
+
+        <button class="nav-item active" data-section="dashboard">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="nav-item" data-section="orders">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Orders</span>
+          <span class="nav-count" id="pending-nav-count">0</span>
+        </button>
+
+        <button class="nav-item" data-section="products">
+          <i class="fa-solid fa-utensils"></i>
+          <span>Products</span>
+        </button>
+
+        <button class="nav-item" data-section="customers">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </button>
+
+        <button class="nav-item" data-section="reviews">
+          <i class="fa-solid fa-star"></i>
+          <span>Reviews</span>
+        </button>
+
+      </nav>
+
+      <!-- Sidebar footer -->
+      <div class="sidebar-bottom">
+
+        <a href="../home/index.html" class="back-link">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>View website</span>
+        </a>
+
+        <button id="admin-logout" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log out</span>
+        </button>
+
+      </div>
+
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <header class="topbar">
+
+        <button
+          class="mobile-menu"
+          id="mobile-menu"
+          aria-label="Open admin menu"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div>
+          <p class="eyebrow">FoodHub Administration</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+
+        <div class="admin-user">
+
+          <div class="avatar">A</div>
+
+          <div>
+            <strong>Administrator</strong>
+            <span>Admin account</span>
+          </div>
+
+        </div>
+
+      </header>
+
+      <!-- Dashboard -->
+      <section class="admin-section active" id="dashboard-section">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>Manage your restaurant</h2>
+            <p>
+              See and manage what is happening across FoodHub.
+            </p>
+          </div>
+
+          <button
+            class="primary-btn"
+            data-section-target="orders"
+          >
+            <i class="fa-solid fa-list-check"></i>
+            Manage orders
+          </button>
+
+        </div>
+
+        <div class="stats-grid">
+
+          <article class="stat-card">
+            <div class="stat-icon orders">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+
+            <div>
+              <span>Total orders</span>
+              <strong id="total-orders">0</strong>
+              <small id="orders-summary">0 pending</small>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon revenue">
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+
+            <div>
+              <span>Revenue</span>
+              <strong id="total-revenue">R0.00</strong>
+              <small>Demo order revenue</small>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon customers">
+              <i class="fa-solid fa-users"></i>
+            </div>
+
+            <div>
+              <span>Customers</span>
+              <strong id="total-customers">0</strong>
+              <small>Registered demo customers</small>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon reviews">
+              <i class="fa-solid fa-star"></i>
+            </div>
+
+            <div>
+              <span>Reviews</span>
+              <strong id="total-reviews">0</strong>
+              <small id="rating-summary">
+                Average rating 0.0
+              </small>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <h3>Recent orders</h3>
+                <p>Latest customer activity</p>
+              </div>
+
+              <button
+                class="text-btn"
+                data-section-target="orders"
+              >
+                View all
+              </button>
+
+            </div>
+
+            <div class="table-wrap">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody id="recent-orders"></tbody>
+
+              </table>
+
+            </div>
+
+          </article>
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <h3>Popular products</h3>
+                <p>Products in your catalogue</p>
+              </div>
+
+              <button
+                class="text-btn"
+                data-section-target="products"
+              >
+                Manage
+              </button>
+
+            </div>
+
+            <div
+              id="popular-products"
+              class="product-mini-list"
+            ></div>
+
+          </article>
+
+        </div>
+
+      </section>
+
+      <!-- Orders -->
+      <section class="admin-section" id="orders-section">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>Orders</h2>
+            <p>Review orders and update their status.</p>
+          </div>
+
+          <button
+            class="secondary-btn"
+            id="reset-orders"
+          >
+            <i class="fa-solid fa-rotate-left"></i>
+            Reset demo orders
+          </button>
+
+        </div>
+
+        <div class="filter-row">
+
+          <label>
+            Filter status
+
+            <select id="order-filter">
+              <option value="all">All orders</option>
+              <option value="Pending">Pending</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Ready">Ready</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+
+          </label>
+
+          <div class="search-box">
+
+            <i class="fa-solid fa-search"></i>
+
+            <input
+              id="order-search"
+              type="search"
+              placeholder="Search order or customer"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="panel">
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody id="orders-table"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Products -->
+      <section class="admin-section" id="products-section">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>Products</h2>
+            <p>Manage the FoodHub catalogue.</p>
+          </div>
+
+          <button
+            class="primary-btn"
+            id="add-product"
+          >
+            <i class="fa-solid fa-plus"></i>
+            Add product
+          </button>
+
+        </div>
+
+        <div class="panel">
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Availability</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="products-table"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Customers -->
+      <section class="admin-section" id="customers-section">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>Customers</h2>
+            <p>
+              Customer accounts currently represented
+              in the demo data.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="panel">
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Orders</th>
+                  <th>Total spent</th>
+                </tr>
+              </thead>
+
+              <tbody id="customers-table"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Reviews -->
+      <section class="admin-section" id="reviews-section">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>Reviews</h2>
+            <p>Monitor customer feedback.</p>
+          </div>
+
+        </div>
+
+        <div
+          class="reviews-grid"
+          id="reviews-grid"
+        ></div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Product modal -->
+  <div
+    class="modal-backdrop"
+    id="product-modal"
+    hidden
+  >
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
+    >
+
+      <div class="modal-header">
+
+        <div>
+          <p class="eyebrow">Catalogue</p>
+          <h2 id="product-modal-title">
+            Add product
+          </h2>
+        </div>
+
+        <button
+          class="icon-btn"
+          id="close-product-modal"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+      </div>
+
+      <form id="product-form">
+
+        <input
+          type="hidden"
+          id="product-id"
+        >
+
+        <label>
+          Product name
+          <input
+            id="product-name"
+            required
+            maxlength="80"
+          >
+        </label>
+
+        <div class="form-grid">
+
+          <label>
+            Category
+
+            <select id="product-category">
+              <option>Breakfast</option>
+              <option>Main Dish</option>
+              <option>Desserts</option>
+              <option>Snacks & Drinks</option>
+            </select>
+
+          </label>
+
+          <label>
+            Price (R)
+
+            <input
+              id="product-price"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+            >
+
+          </label>
+
+        </div>
+
+        <label>
+          Image path
+
+          <input
+            id="product-image"
+            placeholder="../assets/images/..."
+            maxlength="300"
+          >
+
+        </label>
+
+        <label>
+          Description
+
+          <textarea
+            id="product-description"
+            rows="3"
+            maxlength="250"
+          ></textarea>
+
+        </label>
+
+        <label class="switch-label">
+
+          <input
+            id="product-available"
+            type="checkbox"
+            checked
+          >
+
+          <span>Available for customers</span>
+
+        </label>
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="secondary-btn"
+            id="cancel-product"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="primary-btn"
+          >
+            Save product
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <script src="admin.js"></script>
+
+</body>
+</html>

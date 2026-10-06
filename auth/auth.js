@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("logout-btn");
     const loggedInUser = localStorage.getItem("loggedInUser");
   
-    console.log("Auth check - Logged in user:", loggedInUser); // Debugging line
-  
     if (loggedInUser) {
       if (loginBtn) loginBtn.style.display = "none";
       if (logoutBtn) logoutBtn.style.display = "inline-block";
@@ -17,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("userRole");
         alert("You have been logged out.");
         window.location.href = "../auth/login.html";
       });
