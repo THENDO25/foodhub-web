@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="menu.css">
     <link rel="stylesheet" href="../shared/navbar.css">
   <link rel="stylesheet" href="../shared/responsive.css">
+  <script src="../shared/api.js"></script>
+  <script src="../shared/session.js"></script>
+  <script src="../shared/product-store.js"></script>
   <script src="menu.js"></script>
   <script src="../cart/cart.js"></script>
   <script src="../auth/auth.js"></script>
@@ -29,14 +32,13 @@
           <ul>
             <li><a href="../home/index.html">Home</a></li>
             <li><a href="index.html">Menu</a></li>
-            <li><a href="../about/index.html">About</a></li>
+            <li><a href="../manage-account/profile.html">Account</a></li>
             <li><a href="../reviews/index.html">Reviews</a></li>
             <li><a href="../cart/index.html">Cart</a></li>
           </ul>
         </div>
       </nav>
-      <a href="../auth/login.html" class="btn" id="login-btn">Login</a>
-      <a href="#" class="btn" id="logout-btn" style="display: none;">Log out</a>
+      <a href="../auth/login.html" class="btn auth-btn" id="auth-btn">Sign in</a>
     </header>
 
   <section id="menu-section" class="dishes">
@@ -466,14 +468,6 @@
 
   <!--script-->
   <script>
-      document.addEventListener("DOMContentLoaded", () => {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.navbar ul');
-
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('show');
-    });
-  });
     //active dish navbar
     document.addEventListener("DOMContentLoaded", () => {
       const currentPage = window.location.pathname.split("/").pop();
@@ -486,32 +480,6 @@
         }
       });
     });
-    window.addEventListener('DOMContentLoaded', () => {
-      const currentPage = window.location.pathname.split('/').pop(); // get current filename
-      const links = document.querySelectorAll('.navbar a');
-
-      links.forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
-          link.classList.add('active');
-        }
-      });
-    });
-    // Open popup
-    document.querySelectorAll('.view-popup').forEach(icon => {
-      icon.addEventListener('click', () => {
-        const popup = document.getElementById('global-popup');
-        document.getElementById('popup-img').src = icon.dataset.image;
-        document.getElementById('popup-title').textContent = icon.dataset.title;
-        document.getElementById('popup-price').textContent = icon.dataset.price;
-        document.getElementById('popup-description').textContent = icon.dataset.description;
-        document.getElementById('popup-details').textContent = icon.dataset.details;
-        document.getElementById('popup-total').textContent = icon.dataset.price;
-
-        popup.style.display = 'block';
-        setTimeout(() => popup.classList.add('show'), 10);
-      });
-    });
-
     // Close popup
     document.getElementById('close-popup').addEventListener('click', () => {
       const popup = document.getElementById('global-popup');

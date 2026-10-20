@@ -1,0 +1,143 @@
+/* Styles the customer profile page. */
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: #f6f7fb;
+    color: #202331;
+    font-family: Arial, sans-serif
+}
+
+.profile-wrap {
+    max-width: 1050px;
+    margin: 40px auto;
+    padding: 0 18px;
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 22px
+}
+
+.profile-card {
+    background: #fff;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px #17223b12
+}
+
+.profile-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #ff6b35;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold
+}
+
+.eyebrow {
+    color: #ff6b35;
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin: 0 0 5px
+}
+
+.profile-heading h1 {
+    margin: 0 0 5px
+}
+
+.muted {
+    color: #777;
+    font-size: 14px
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin: 14px 0 7px
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8dbe4;
+    border-radius: 8px;
+    font: inherit;
+    background: #fff
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 16px
+}
+
+.primary {
+    background: #ff6b35;
+    color: #fff
+}
+
+.secondary {
+    background: #24283b;
+    color: #fff
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 28px 0
+}
+
+.order-row {
+    padding: 14px 0;
+    border-bottom: 1px solid #eee
+}
+
+.order-row strong {
+    display: block
+}
+
+.order-row small {
+    color: #777
+}
+
+.status {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 9px;
+    background: #fff0e8;
+    color: #c54b1c;
+    border-radius: 20px;
+    font-size: 12px
+}
+
+#profile-message {
+    min-height: 20px;
+    color: #287a42
+}
+
+@media(max-width:760px) {
+    .profile-wrap {
+        grid-template-columns: 1fr;
+        margin: 20px auto
+    }
+
+    .profile-card {
+        padding: 20px
+    }
+}

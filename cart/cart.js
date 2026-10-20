@@ -1,3 +1,5 @@
+// Adds food to the cart and updates the cart display.
+// Saves a selected food item in the cart.
 function addToCart(name, price, image) {
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -79,9 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Open popup
-  openFavoritesIcon.addEventListener('click', () => {
+  if (openFavoritesIcon) openFavoritesIcon.addEventListener('click', () => {
     updateFavoritesUI();
-    popup.classList.remove('hidden');
+    if (popup) popup.classList.remove('hidden');
   });
 
   // Initialize UI
@@ -90,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function updateFavoritesUI() {
   const list = document.getElementById('favorites-list');
+  if (!list) return; // this page has no favourites popup
   list.innerHTML = '';
 
   favorites.forEach((item, index) => {
@@ -115,10 +118,12 @@ function saveFavorites() {
 }
 
 function closeFavorites() {
-  document.getElementById('favorites-popup').classList.add('hidden');
+  const popup = document.getElementById('favorites-popup');
+  if (popup) popup.classList.add('hidden');
 }
 function showCustomAlert(message = "Added to favorites!") {
   const alertBox = document.getElementById("custom-alert");
+  if (!alertBox) return;
   alertBox.querySelector("p").textContent = message;
 
   alertBox.classList.remove("hidden");

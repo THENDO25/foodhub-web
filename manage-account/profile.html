@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account | FoodHub</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="../shared/navbar.css">
+  <link rel="stylesheet" href="../shared/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="../shared/navbar.js" defer></script>
+  <script src="../shared/api.js"></script>
+  <script src="../shared/session.js"></script>
+  <script src="../auth/auth.js" defer></script>
+  <script src="profile.js" defer></script>
+</head>
+
+<body>
+  <header class="header"><a href="../home/index.html" class="logo">Food<span>Hub</span></a>
+    <nav class="navbar">
+      <div id="menu-toggle" class="menu-icon" aria-label="Toggle navigation"><i id="hamburger-icon"
+          class="fa fa-bars"></i><i id="close-icon" class="fa fa-times" style="display:none"></i></div>
+      <div class="navbar-links">
+        <ul>
+          <li><a href="../home/index.html">Home</a></li>
+          <li><a href="../menu/index.html">Menu</a></li>
+          <li><a href="profile.html" aria-current="page">Account</a></li>
+          <li><a href="../reviews/index.html">Reviews</a></li>
+          <li><a href="../cart/index.html">Cart</a></li>
+        </ul>
+      </div>
+    </nav><a href="../auth/login.html" class="btn auth-btn" id="auth-btn">Sign in</a>
+  </header>
+  <main class="profile-wrap">
+    <section class="profile-card">
+      <div class="profile-heading">
+        <div class="avatar" id="profile-avatar">FH</div>
+        <div>
+          <p class="eyebrow">FOODHUB ACCOUNT</p>
+          <h1>My Profile</h1>
+          <p id="profile-email" class="muted"></p>
+        </div>
+      </div>
+      <form id="profile-form"><label for="profile-name">Full name</label><input id="profile-name" type="text" required
+          minlength="2"><label for="profile-phone">Phone number</label><input id="profile-phone" type="tel"
+          placeholder="e.g. 071 234 5678"><label for="profile-address">Delivery address</label><textarea
+          id="profile-address" rows="3" placeholder="Your usual delivery address"></textarea><button class="primary"
+          type="submit">Save profile</button></form>
+      <hr>
+      <h2>Change password</h2>
+      <form id="password-form"><label for="current-password">Current password</label><input id="current-password"
+          type="password" required><label for="new-password">New password</label><input id="new-password"
+          type="password" minlength="6" required><label for="confirm-new-password">Confirm new password</label><input
+          id="confirm-new-password" type="password" minlength="6" required><button class="secondary"
+          type="submit">Update password</button></form>
+      <p id="profile-message" role="status"></p>
+    </section>
+    <section class="profile-card order-card">
+      <h2>My Orders</h2>
+      <p class="muted">Orders placed with this account on this browser.</p>
+      <div id="my-orders">
+        <p>No orders yet.</p>
+      </div><button id="profile-logout" class="secondary" type="button">Log out</button>
+    </section>
+  </main>
+</body>
+
+</html>

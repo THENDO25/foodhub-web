@@ -1,15 +1,5 @@
+// Handles review likes, dislikes, and comments.
 document.addEventListener("DOMContentLoaded", function () {
-  const menuToggle = document.getElementById("menu-toggle");
-  const navbar = document.querySelector(".navbar ul");
-  const hamburgerIcon = document.getElementById("hamburger-icon");
-  const closeIcon = document.getElementById("close-icon");
-
-  menuToggle.addEventListener("click", () => {
-    navbar.classList.toggle("active");
-    hamburgerIcon.style.display = navbar.classList.contains("active") ? "none" : "inline";
-    closeIcon.style.display = navbar.classList.contains("active") ? "inline" : "none";
-  });
-
   // === Reusable function to handle like/dislike/comment ===
   function applyReviewLogic(review) {
     const likeBtn = review.querySelector('.like-btn');
@@ -113,17 +103,41 @@ document.addEventListener("DOMContentLoaded", function () {
   const reviewGrid = document.querySelector('.review-grid');
   const addReviewContainer = document.querySelector('.AddReview').parentElement;
 
-  addReviewBtn.addEventListener('click', () => {
+  function escapeReviewHtml(value) {
+    return String(value).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[c]);
+  }
+
+  // Persist the review through the API (SQLite). The server decides who the
+  // reviewer actually is from the session cookie — it never trusts a name
+  // the client might send — and the text comes back out already meant to be
+  // HTML-escaped at render time (see escapeReviewHtml below), so a review
+  // containing something like "<script>" or an <img onerror=...> tag is
+  // stored as plain text and shown as plain text, not executed.
+  addReviewBtn.addEventListener('click', async () => {
     const reviewText = reviewInput.value.trim();
     if (reviewText === '') return;
+
+    addReviewBtn.disabled = true;
+    let saved;
+    try {
+      const result = await window.foodHubApi.post('/api/reviews', { text: reviewText });
+      saved = result.review;
+    } catch (err) {
+      alert(err.message || 'Could not post your review.');
+      addReviewBtn.disabled = false;
+      return;
+    }
+    addReviewBtn.disabled = false;
+
+    const reviewerName = saved.name;
 
     const reviewHTML = `
       <div class="review-page">
         <div class="names">
           <img src="../assets/images/thendo.enc" alt="Profile Picture" class="profile-picture">
-          <h6>Thendo viens</h6>
+          <h6>${escapeReviewHtml(reviewerName)}</h6>
         </div>
-        <p>"${reviewText}"</p>
+        <p>"${escapeReviewHtml(reviewText)}"</p>
         <div class="review-actions">
           <div class="review">
             <button class="like-btn"><i class='bx bxs-like'></i>Like <span class="like-count">0</span></button>
@@ -152,5 +166,6 @@ reviewWrapper.innerHTML = newReviewPage.innerHTML;
 
 reviewGrid.insertBefore(reviewWrapper, addReviewContainer);
 applyReviewLogic(reviewWrapper.querySelector('.review'));
+    reviewInput.value = '';
   });
 });

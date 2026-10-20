@@ -30,6 +30,17 @@
     .btn, .btn1 {
       display: none;
     }
+
+    /* Keep the single sign-in/sign-out control visible on mobile. */
+    .header > .btn.auth-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: auto;
+      min-width: 82px;
+      padding: 5px 10px;
+    }
   }
   
   @media (max-width: 768px) {

@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <title>African_foodhub</title>
     <script src="../shared/navbar.js"></script>
+  <script src="../shared/api.js"></script>
+  <script src="../shared/session.js"></script>
   <script src="../auth/auth.js"></script>
 </head>
 <body>
@@ -24,14 +26,13 @@
           <ul>
             <li><a href="../home/index.html">Home</a></li>
             <li><a href="../menu/index.html">Menu</a></li>
-            <li><a href="../about/index.html">About</a></li>
+            <li><a href="../manage-account/profile.html">Account</a></li>
             <li><a href="index.html">Reviews</a></li>
             <li><a href="../cart/index.html">Cart</a></li>
           </ul>
         </div>
       </nav>
-      <a href="../auth/login.html" class="btn" id="login-btn">Login</a>
-      <a href="#" class="btn" id="logout-btn" style="display: none;">Log out</a>
+      <a href="../auth/login.html" class="btn auth-btn" id="auth-btn">Sign in</a>
     </header>
 
     <section class="review-container">

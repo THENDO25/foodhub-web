@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,28 +29,28 @@
       <!-- Sidebar navigation -->
       <nav class="side-nav" aria-label="Admin navigation">
 
-        <button class="nav-item active" data-section="dashboard">
+        <button type="button" class="nav-item active" data-section="dashboard">
           <i class="fa-solid fa-chart-line"></i>
           <span>Dashboard</span>
         </button>
 
-        <button class="nav-item" data-section="orders">
+        <button type="button" class="nav-item" data-section="orders">
           <i class="fa-solid fa-receipt"></i>
           <span>Orders</span>
           <span class="nav-count" id="pending-nav-count">0</span>
         </button>
 
-        <button class="nav-item" data-section="products">
+        <button type="button" class="nav-item" data-section="products">
           <i class="fa-solid fa-utensils"></i>
           <span>Products</span>
         </button>
 
-        <button class="nav-item" data-section="customers">
+        <button type="button" class="nav-item" data-section="customers">
           <i class="fa-solid fa-users"></i>
           <span>Customers</span>
         </button>
 
-        <button class="nav-item" data-section="reviews">
+        <button type="button" class="nav-item" data-section="reviews">
           <i class="fa-solid fa-star"></i>
           <span>Reviews</span>
         </button>
@@ -78,11 +79,7 @@
 
       <header class="topbar">
 
-        <button
-          class="mobile-menu"
-          id="mobile-menu"
-          aria-label="Open admin menu"
-        >
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open admin menu">
           <i class="fa-solid fa-bars"></i>
         </button>
 
@@ -116,10 +113,7 @@
             </p>
           </div>
 
-          <button
-            class="primary-btn"
-            data-section-target="orders"
-          >
+          <button class="primary-btn" data-section-target="orders">
             <i class="fa-solid fa-list-check"></i>
             Manage orders
           </button>
@@ -148,7 +142,7 @@
             <div>
               <span>Revenue</span>
               <strong id="total-revenue">R0.00</strong>
-              <small>Demo order revenue</small>
+              <small>From customer orders</small>
             </div>
           </article>
 
@@ -160,7 +154,7 @@
             <div>
               <span>Customers</span>
               <strong id="total-customers">0</strong>
-              <small>Registered demo customers</small>
+              <small>Registered website accounts</small>
             </div>
           </article>
 
@@ -191,10 +185,7 @@
                 <p>Latest customer activity</p>
               </div>
 
-              <button
-                class="text-btn"
-                data-section-target="orders"
-              >
+              <button class="text-btn" data-section-target="orders">
                 View all
               </button>
 
@@ -230,19 +221,13 @@
                 <p>Products in your catalogue</p>
               </div>
 
-              <button
-                class="text-btn"
-                data-section-target="products"
-              >
+              <button class="text-btn" data-section-target="products">
                 Manage
               </button>
 
             </div>
 
-            <div
-              id="popular-products"
-              class="product-mini-list"
-            ></div>
+            <div id="popular-products" class="product-mini-list"></div>
 
           </article>
 
@@ -260,13 +245,7 @@
             <p>Review orders and update their status.</p>
           </div>
 
-          <button
-            class="secondary-btn"
-            id="reset-orders"
-          >
-            <i class="fa-solid fa-rotate-left"></i>
-            Reset demo orders
-          </button>
+
 
         </div>
 
@@ -290,11 +269,7 @@
 
             <i class="fa-solid fa-search"></i>
 
-            <input
-              id="order-search"
-              type="search"
-              placeholder="Search order or customer"
-            >
+            <input id="order-search" type="search" placeholder="Search order or customer">
 
           </div>
 
@@ -337,10 +312,7 @@
             <p>Manage the FoodHub catalogue.</p>
           </div>
 
-          <button
-            class="primary-btn"
-            id="add-product"
-          >
+          <button class="primary-btn" id="add-product">
             <i class="fa-solid fa-plus"></i>
             Add product
           </button>
@@ -380,26 +352,32 @@
 
           <div>
             <h2>Customers</h2>
-            <p>
-              Customer accounts currently represented
-              in the demo data.
-            </p>
+            <p>Manage customer accounts registered on the FoodHub website.</p>
           </div>
 
         </div>
 
         <div class="panel">
 
+          <div class="table-toolbar">
+            <input id="customer-search" type="search" placeholder="Search name, email, phone, or address"
+              aria-label="Search customers">
+          </div>
+
           <div class="table-wrap">
 
-            <table>
+            <table id="customers-data-table">
 
               <thead>
                 <tr>
                   <th>Customer</th>
                   <th>Email</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Registered</th>
                   <th>Orders</th>
                   <th>Total spent</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
@@ -425,10 +403,7 @@
 
         </div>
 
-        <div
-          class="reviews-grid"
-          id="reviews-grid"
-        ></div>
+        <div class="reviews-grid" id="reviews-grid"></div>
 
       </section>
 
@@ -437,18 +412,9 @@
   </div>
 
   <!-- Product modal -->
-  <div
-    class="modal-backdrop"
-    id="product-modal"
-    hidden
-  >
+  <div class="modal-backdrop" id="product-modal" hidden>
 
-    <div
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="product-modal-title"
-    >
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
 
       <div class="modal-header">
 
@@ -459,11 +425,7 @@
           </h2>
         </div>
 
-        <button
-          class="icon-btn"
-          id="close-product-modal"
-          aria-label="Close"
-        >
+        <button class="icon-btn" id="close-product-modal" aria-label="Close">
           <i class="fa-solid fa-xmark"></i>
         </button>
 
@@ -471,18 +433,11 @@
 
       <form id="product-form">
 
-        <input
-          type="hidden"
-          id="product-id"
-        >
+        <input type="hidden" id="product-id">
 
         <label>
           Product name
-          <input
-            id="product-name"
-            required
-            maxlength="80"
-          >
+          <input id="product-name" required maxlength="80">
         </label>
 
         <div class="form-grid">
@@ -502,13 +457,7 @@
           <label>
             Price (R)
 
-            <input
-              id="product-price"
-              type="number"
-              min="0"
-              step="0.01"
-              required
-            >
+            <input id="product-price" type="number" min="0" step="0.01" required>
 
           </label>
 
@@ -517,32 +466,20 @@
         <label>
           Image path
 
-          <input
-            id="product-image"
-            placeholder="../assets/images/..."
-            maxlength="300"
-          >
+          <input id="product-image" placeholder="../assets/images/..." maxlength="300">
 
         </label>
 
         <label>
           Description
 
-          <textarea
-            id="product-description"
-            rows="3"
-            maxlength="250"
-          ></textarea>
+          <textarea id="product-description" rows="3" maxlength="250"></textarea>
 
         </label>
 
         <label class="switch-label">
 
-          <input
-            id="product-available"
-            type="checkbox"
-            checked
-          >
+          <input id="product-available" type="checkbox" checked>
 
           <span>Available for customers</span>
 
@@ -550,18 +487,11 @@
 
         <div class="modal-actions">
 
-          <button
-            type="button"
-            class="secondary-btn"
-            id="cancel-product"
-          >
+          <button type="button" class="secondary-btn" id="cancel-product">
             Cancel
           </button>
 
-          <button
-            type="submit"
-            class="primary-btn"
-          >
+          <button type="submit" class="primary-btn">
             Save product
           </button>
 
@@ -573,7 +503,11 @@
 
   </div>
 
+  <script src="../shared/api.js"></script>
+  <script src="../shared/session.js"></script>
+  <script src="../shared/product-store.js"></script>
   <script src="admin.js"></script>
 
 </body>
+
 </html>

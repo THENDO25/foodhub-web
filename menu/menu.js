@@ -1,111 +1,180 @@
+// Menu page logic
 
+function getMenuCategory() {
+  const page = window.location.pathname.split("/").pop();
 
-document.querySelector('.bxs-food-menu').addEventListener('click', function () {
-  const popup = document.getElementById('popup');
-  popup.style.display = 'block';
-  setTimeout(() => popup.classList.add('show'), 10);
-});
+  if (page === "index.html") return "Breakfast";
+  if (page === "main-dish.html") return "Main Dish";
+  if (page === "desserts.html") return "Desserts";
+  if (page === "snacks.html") return "Snacks & Drinks";
 
-document.querySelector('#popup button').addEventListener('click', function () {
-  const popup = document.getElementById('popup');
-  popup.classList.remove('show');
-  setTimeout(() => popup.style.display = 'none', 300);
-});
+  return "";
+}
+
+async function renderCustomerMenu() {
+  const category = getMenuCategory();
+  const container = document.querySelector(".menu-grid-container");
+
+  if (!category || !container) return;
+
+  const allProducts = await getProducts();
+  const products = allProducts.filter(product =>
+    product.category === category && product.available !== false
+  );
+
+  container.innerHTML = products.map(product => `
+    <div class="${category === "Breakfast" ? "breakfast" : category === "Main Dish" ? "main-dish" : "desserts"}">
+
+      <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">
+
+      <div class="innertxt">
+
+        <div class="name-and-price">
+          <h2 class="name-and-price">${escapeHtml(product.name)}</h2>
+          <h2 class="name-and-price">R${Number(product.price).toFixed(2)}</h2>
+        </div>
+
+        <p>${escapeHtml(product.description || "Enjoy our tasty food made with love")}</p>
+
+        <div class="Activity-section-menu">
+
+          <i class="bx bxs-food-menu view-popup"
+            data-image="${escapeHtml(product.image)}"
+            data-title="${escapeHtml(product.name)}"
+            data-price="R${Number(product.price).toFixed(2)}"
+            data-description="${escapeHtml(product.description || "") }"
+            data-details="${escapeHtml(product.details || product.description || "")}">
+          </i>
+
+          <i class="bx bx-heart view-fav"
+            data-image="${escapeHtml(product.image)}"
+            data-title="${escapeHtml(product.name)}"
+            data-price="R${Number(product.price).toFixed(2)}"
+            data-description="${escapeHtml(product.description || "")}">
+          </i>
+
+          <i class="bx bx-cart add-product-cart"
+            data-name="${escapeHtml(product.cartName || product.name)}"
+            data-price="${Number(product.price)}"
+            data-image="${escapeHtml(product.image)}">
+          </i>
+
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
 
 function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const count = cart.reduce((total, item) => total + item.quantity, 0);
-  document.getElementById('cart-count').innerText = count;
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const count = cart.reduce((total, item) => total + Number(item.quantity || 0), 0);
+  const cartCount = document.getElementById("cart-count");
+
+  if (cartCount) cartCount.innerText = count;
 }
 
-// Call on page load
-updateCartCount();
-const navLinks = document.querySelectorAll('.navbar ul li a');
+function addMenuItemToCart(name, price, image) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existingItem = cart.find(item => item.name === name || item.title === name);
 
-navLinks.forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.forEach(l => l.parentNode.classList.remove('active'));
-    link.parentNode.classList.add('active');
-  });
-});
-// Load favorites from localStorage
-let favouriteItems = JSON.parse(localStorage.getItem('favouriteItems')) || [];
-
-function saveFavouritesToLocal() {
-  localStorage.setItem('favouriteItems', JSON.stringify(favouriteItems));
-}
-
-// Toggle favorite
-document.querySelectorAll('.view-fav').forEach(icon => {
-  const title = icon.getAttribute('data-title');
-
-  // On load: visually mark as active if in favorites
-  if (favouriteItems.some(item => item.title === title)) {
-    icon.classList.add('active-heart');
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({ name, price, image, quantity: 1 });
   }
 
-  icon.addEventListener('click', () => {
-    const image = icon.getAttribute('data-image');
-    const price = icon.getAttribute('data-price');
-    const description = icon.getAttribute('data-description');
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
 
-    const index = favouriteItems.findIndex(item => item.title === title);
+  if (typeof showCustomAlert === "function") {
+    showCustomAlert(`${name} Added to cart`);
+  }
+}
 
-    if (index === -1) {
-      // Add to favorites
-      favouriteItems.push({ title, image, price, description });
-      icon.classList.add('active-heart');
-    } else {
-      // Remove from favorites
-      favouriteItems.splice(index, 1);
-      icon.classList.remove('active-heart');
+function setupMenuEvents() {
+  const container = document.querySelector(".menu-grid-container");
+
+  if (!container) return;
+
+  container.addEventListener("click", event => {
+    const cartButton = event.target.closest(".add-product-cart");
+    const popupButton = event.target.closest(".view-popup");
+    const favoriteButton = event.target.closest(".view-fav");
+
+    if (cartButton) {
+      addMenuItemToCart(
+        cartButton.dataset.name,
+        Number(cartButton.dataset.price),
+        cartButton.dataset.image
+      );
     }
 
-    saveFavouritesToLocal();
+    if (popupButton) {
+      openProductPopup(popupButton);
+    }
+
+    if (favoriteButton) {
+      toggleMenuFavorite(favoriteButton);
+    }
   });
-});
+}
 
-// Show favorites popup
-document.querySelector('.Activity-section .bx-heart').addEventListener('click', () => {
-  const container = document.getElementById('favourites-container');
-  container.innerHTML = '';
+function openProductPopup(icon) {
+  const popup = document.getElementById("global-popup");
+  if (!popup) return;
 
-  if (favouriteItems.length === 0) {
-    container.innerHTML = '<p>No favourites yet.</p>';
-  } else {
-    favouriteItems.forEach(item => {
-      const favDiv = document.createElement('div');
-      favDiv.className = 'fav-item';
-      favDiv.innerHTML = `
-        <img src="${item.image}" alt="${item.title}" width="100">
-        <div>
-          <h3>${item.title}</h3>
-          <p>${item.price}</p>
-          <p>${item.description}</p>
-        </div>
-      `;
-      container.appendChild(favDiv);
+  document.getElementById("popup-img").src = icon.dataset.image;
+  document.getElementById("popup-title").textContent = icon.dataset.title;
+  document.getElementById("popup-price").textContent = icon.dataset.price;
+  document.getElementById("popup-description").textContent = icon.dataset.description || "";
+  document.getElementById("popup-details").textContent = icon.dataset.details || "";
+
+  const quantity = document.querySelector(".popup-quantity-container .number");
+  if (quantity) quantity.textContent = "1";
+
+  const total = document.getElementById("popup-total");
+  if (total) total.textContent = `TOTAL ${icon.dataset.price}`;
+
+  popup.style.display = "block";
+  setTimeout(() => popup.classList.add("show"), 10);
+}
+
+function toggleMenuFavorite(icon) {
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+  const title = icon.dataset.title;
+  const index = favorites.findIndex(item => item.title === title);
+
+  if (index === -1) {
+    favorites.push({
+      title,
+      imgSrc: icon.dataset.image,
+      price: Number(String(icon.dataset.price).replace("R", "")),
+      description: icon.dataset.description
     });
+
+    icon.classList.add("active-heart");
+  } else {
+    favorites.splice(index, 1);
+    icon.classList.remove("active-heart");
   }
 
-  document.getElementById('favourite-list-popup').style.display = 'block';
-});
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}
 
 function closeFavouriteList() {
-  document.getElementById('favourite-list-popup').style.display = 'none';
-}
-function searchDishes() {
-  const input = document.getElementById('searchInput').value.toLowerCase();
-  const dishes = document.querySelectorAll('.desserts');
-
-  dishes.forEach(dish => {
-    const title = dish.querySelector('.name-and-price').textContent.toLowerCase();
-    if (title.includes(input)) {
-      dish.style.display = 'block';
-    } else {
-      dish.style.display = 'none';
-    }
-  });
+  const popup = document.getElementById("favorites-popup");
+  if (popup) popup.classList.add("hidden");
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  renderCustomerMenu();
+  setupMenuEvents();
+  updateCartCount();
+});
 
+
+window.addEventListener("focus", async () => {
+  await getProducts(true);
+  renderCustomerMenu();
+  updateCartCount();
+});

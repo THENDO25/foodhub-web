@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../shared/navbar.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css">
     <script src="../shared/navbar.js"></script>
+  <script src="../shared/api.js"></script>
+  <script src="../shared/session.js"></script>
   <script src="../auth/auth.js"></script>
 </head>
 
@@ -25,14 +27,13 @@
           <ul>
             <li><a href="../home/index.html">Home</a></li>
             <li><a href="../menu/index.html">Menu</a></li>
-            <li><a href="../about/index.html">About</a></li>
+            <li><a href="../manage-account/profile.html">Account</a></li>
             <li><a href="../reviews/index.html">Reviews</a></li>
             <li><a href="index.html">Cart</a></li>
           </ul>
         </div>
       </nav>
-      <a href="../auth/login.html" class="btn" id="login-btn">Login</a>
-      <a href="#" class="btn" id="logout-btn" style="display: none;">Log out</a>
+      <a href="../auth/login.html" class="btn auth-btn" id="auth-btn">Sign in</a>
     </header>
 
   <div class="cart-container">
@@ -86,6 +87,11 @@
   </script>
 
   <script>
+   // Cart contents stay client-side (localStorage) — that's normal and not a
+   // security concern, since nothing here is trusted: when the order is
+   // actually placed, POST /api/orders looks each item up in the database
+   // and recalculates the price and total itself. Editing `cart` in DevTools
+   // to change a price only changes what you see locally, not what you pay.
    const cartItemsContainer = document.getElementById('cart-items');
 const totalElement = document.getElementById('total');
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -95,16 +101,20 @@ function renderCart() {
   let total = 0;
 
   cart.forEach((item, index) => {
-    total += item.price * item.quantity;
+    const itemName = item.name || item.title || 'Food item';
+    const itemImage = item.image || item.imgSrc || '';
+    const itemPrice = Number(item.price) || 0;
+    const itemQuantity = Number(item.quantity) || 1;
+    total += itemPrice * itemQuantity;
     cartItemsContainer.innerHTML += `
       <div class="cart-item">
-        <img src="${item.image}" alt="${item.name}" />
+        <img src="${itemImage}" alt="${itemName}" />
         <div class="item-details">
-          <h3>${item.name}</h3>
-          <p>R${item.price.toFixed(2)}</p>
+          <h3>${itemName}</h3>
+          <p>R${itemPrice.toFixed(2)}</p>
           <div>
             <button onclick="updateQuantity(${index}, -1)">-</button>
-            ${item.quantity}
+            ${itemQuantity}
             <button onclick="updateQuantity(${index}, 1)">+</button>
           </div>
         </div>
@@ -137,8 +147,24 @@ function closeModal() {
 
 renderCart();
 
+// Prefill checkout with the signed-in customer's details.
+(async function prefillCheckout() {
+  const user = await window.foodHubSession.get();
+  if (!user || user.role !== 'customer') return;
+  document.getElementById('email').value = user.email;
+  document.getElementById('name').value = user.name || '';
+  document.getElementById('address').value = user.address || '';
+})();
+
 // Show Checkout
-document.querySelector('.checkout-btn').addEventListener('click', () => {
+document.querySelector('.checkout-btn').addEventListener('click', async () => {
+  const user = await window.foodHubSession.get();
+  if (!user || user.role !== 'customer') {
+    sessionStorage.setItem('foodhubReturnTo', window.location.href);
+    alert('Please log in before placing an order.');
+    window.location.href = '../auth/login.html';
+    return;
+  }
   if (cart.length === 0) {
     alert('Your cart is empty!');
     return;
@@ -147,12 +173,21 @@ document.querySelector('.checkout-btn').addEventListener('click', () => {
 });
 
 // Handle Checkout Form Submission
-document.getElementById('checkout-form').addEventListener('submit', function (e) {
+document.getElementById('checkout-form').addEventListener('submit', async function (e) {
   e.preventDefault();
+
+  const user = await window.foodHubSession.get();
+  if (!user || user.role !== 'customer') {
+    sessionStorage.setItem('foodhubReturnTo', window.location.href);
+    alert('Please log in before placing an order.');
+    window.location.href = '../auth/login.html';
+    return;
+  }
 
   const name = document.getElementById('name').value.trim();
   const email = document.getElementById('email').value.trim();
   const address = document.getElementById('address').value.trim();
+  if (email.toLowerCase() !== user.email.toLowerCase()) { alert('Please use the email address for your signed-in account.'); return; }
 
   if (!name || !email || !address) {
     alert('Please fill in all fields.');
@@ -164,11 +199,33 @@ document.getElementById('checkout-form').addEventListener('submit', function (e)
     return;
   }
 
-  const orderItems = cart.map(item => ({
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price.toFixed(2),
-  }));
+  const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'cod';
+  const submitBtn = document.querySelector('#checkout-form .confirm-btn');
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Place the order server-side. The server looks up each item's real price
+  // in the database and recomputes the total — the price/total sent from
+  // here are never trusted, so this call can't be used to under-pay.
+  let order;
+  try {
+    const result = await window.foodHubApi.post('/api/orders', {
+      address,
+      paymentMethod,
+      items: cart.map(item => ({
+        name: item.name || item.title || 'Food item',
+        quantity: Number(item.quantity) || 1,
+      })),
+    });
+    order = result.order;
+  } catch (err) {
+    alert(err.message || 'Could not place your order. Please try again.');
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
+  if (submitBtn) submitBtn.disabled = false;
+
+  const orderId = order.id;
+  const orderTotal = order.total;
 
   let orderTableHTML = `
   <table style="width: 100%; border-collapse: collapse;">
@@ -186,10 +243,10 @@ document.getElementById('checkout-form').addEventListener('submit', function (e)
 cart.forEach(item => {
   orderTableHTML += `
     <tr>
-      <td style="padding: 8px;"><img src="${item.image}" alt="${item.name}" width="60" style="border-radius: 5px;" /></td>
-      <td style="padding: 8px;">${item.name}</td>
-      <td align="center" style="padding: 8px;">${item.quantity}</td>
-      <td align="right" style="padding: 8px;">R${item.price.toFixed(2)}</td>
+      <td style="padding: 8px;"><img src="${item.image || item.imgSrc || ""}" alt="${item.name || item.title || "Food item"}" width="60" style="border-radius: 5px;" /></td>
+      <td style="padding: 8px;">${item.name || item.title || "Food item"}</td>
+      <td align="center" style="padding: 8px;">${Number(item.quantity) || 1}</td>
+      <td align="right" style="padding: 8px;">R${Number(item.price || 0).toFixed(2)}</td>
     </tr>
   `;
 });
@@ -203,14 +260,15 @@ const orderDetails = {
   user_name: name,
   user_email: email,
   user_address: address,
-  user_total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2),
+  user_total: orderTotal.toFixed(2),
+  order_id: orderId,
   order_html: orderTableHTML,
   to_email: email
 };
 
 
   // Send to user
-  emailjs.send("service_gcfdzxl", "template_ph5ho4r", orderDetails)
+  if (window.emailjs && typeof emailjs.send === "function") emailjs.send("service_gcfdzxl", "template_ph5ho4r", orderDetails)
     .then(() => {
       console.log("Confirmation email sent to user");
     })
@@ -224,17 +282,18 @@ const orderDetails = {
     to_email: "lmukwevho1125@gmail.com", // restaurant email
   };
 
-  emailjs.send("service_gcfdzxl", "template_ph5ho4r", restaurantDetails)
+  if (window.emailjs && typeof emailjs.send === "function") emailjs.send("service_gcfdzxl", "template_ph5ho4r", restaurantDetails)
     .then(() => {
       console.log("Email sent to restaurant");
-      alert("Thank you for shpping with Foodhub, your order has been placed and a confirmation email has been sent.");
+      alert(`Thank you for shopping with FoodHub! Order ${orderId} has been placed. A confirmation email has been sent.`);
     })
     .catch(err => {
       console.error("Failed to send email to restaurant", err);
-      alert("Order placed, but failed to send confirmation email.");
+      alert(`Order ${orderId} was placed successfully, but the confirmation email could not be sent.`);
     });
 
   // Clear cart and close modal
+  if (!window.emailjs || typeof emailjs.send !== 'function') alert(`Order ${orderId} was placed successfully. Email confirmation is not configured.`);
   cart = [];
   localStorage.setItem('cart', JSON.stringify(cart));
   renderCart();
