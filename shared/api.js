@@ -13,7 +13,7 @@
     try {
       data = await res.json();
     } catch (_) {
-      /* empty body for some endpoints */
+      /* empty body is fine for some endpoints */
     }
     if (!res.ok) {
       const error = new Error((data && data.error) || `Request failed (${res.status})`);

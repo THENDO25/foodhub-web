@@ -60,8 +60,12 @@
     }
   });
 
-  // order and favourite actions work after signing in
-
+  // Guard order and favourite actions before legacy click handlers run.
+  // Uses the cached session (populated by the DOMContentLoaded check above)
+  // so the block can happen synchronously, in the capture phase, before any
+  // other click handler fires — matching the original behaviour. If the
+  // cache hasn't resolved yet (first instant of page load), treat the user
+  // as signed out, same as the old code's safe default.
   document.addEventListener("click", function (event) {
     const target = event.target.closest(
       ".add-product-cart, .view-fav, .bx-heart, .bx-cart, .addtocart, .checkout-btn"

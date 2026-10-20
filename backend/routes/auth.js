@@ -7,8 +7,8 @@ const db = require("../db");
 const router = express.Router();
 
 // Brute-force protection on the two credential-guessing endpoints.
-// rate limiting 
-// you should get HTTP 429 after a handful of attempts.
+// rate limiting attempts number of login
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -84,7 +84,7 @@ router.post(
     const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
 
     // Same generic error whether the email doesn't exist or the password is
-    // wrong 
+    // wrong — don't let an attacker use this endpoint to enumerate accounts.
     const genericError = { error: "Invalid email or password." };
 
     if (!user) return res.status(401).json(genericError);
@@ -110,8 +110,8 @@ router.post(
 
     db.prepare("UPDATE users SET failed_logins = 0, locked_until = NULL WHERE id = ?").run(user.id);
 
-    // Regenerate the session on login 
-    // Create a new session ID after login to prevent session fixation attacks.
+    // session-fixation-attacks
+
     req.session.regenerate((err) => {
       if (err) return res.status(500).json({ error: "Could not start session." });
       req.session.userId = user.id;

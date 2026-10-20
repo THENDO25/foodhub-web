@@ -24,8 +24,12 @@ router.get("/", (req, res) => {
   res.json({ reviews: rows.map(toApi) });
 });
 
-// Anonymous guests may post a review (matching the original site's behaviour)
-
+// Anonymous guests may post a review (matching the original site's behaviour),
+// but it's rate-limited and the text is stored as-is and MUST be HTML-escaped
+// by the frontend at render time — never inserted as raw innerHTML. That's
+// the stored-XSS angle worth testing: try submitting a review containing
+// "<script>" or an <img onerror=...> tag and confirm it renders as plain text.
+// Checks and saves a new customer review.
 router.post(
   "/",
   reviewLimiter,

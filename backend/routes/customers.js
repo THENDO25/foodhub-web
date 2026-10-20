@@ -38,8 +38,8 @@ router.put("/:id", requireAdmin, (req, res) => {
 router.delete("/:id", requireAdmin, (req, res) => {
   const target = db.prepare("SELECT * FROM users WHERE id = ? AND role = 'customer'").get(req.params.id);
   if (!target) return res.status(404).json({ error: "Customer not found." });
-  // Orders keep their customer_name/email 
-  // so orders aren't lost when the account is removed.
+  // Orders keep their customer_name/email snapshot (user_id is ON DELETE SET NULL),
+  // so historical orders aren't lost when the account is removed.
   db.prepare("DELETE FROM users WHERE id = ?").run(target.id);
   res.json({ ok: true });
 });

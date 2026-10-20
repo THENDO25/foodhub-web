@@ -1,5 +1,6 @@
 # FoodHub
 
+
 ## Run it
 
 ```bash
@@ -16,8 +17,7 @@ The database (`backend/data/foodhub.db`, SQLite) and the product catalogue
 are created and seeded automatically on first run. A default admin account
 is also seeded:
 
-- **Admin**: `admin@foodhub.com` / `admin123` (change via `ADMIN_EMAIL` /
-  `ADMIN_PASSWORD` in `.env`)
+- **Admin**: `admin@foodhub.com` / `admin123` 
 - Customers sign up normally through the site.
 
 To start over with a clean database, stop the server and delete
@@ -27,7 +27,6 @@ To start over with a clean database, stop the server and delete
 
 The original site kept *everything* — accounts, passwords (in plain text),
 orders, products, reviews, even the signed-in role — in `localStorage`.
-
 
 All of that now lives in `backend/`, backed by SQLite, with:
 
