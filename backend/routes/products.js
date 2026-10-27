@@ -36,7 +36,11 @@ router.post(
     body("id").trim().matches(/^[a-z0-9-]{2,60}$/i).withMessage("id must be alphanumeric/hyphen."),
     body("name").trim().isLength({ min: 1, max: 120 }),
     body("category").trim().isLength({ min: 1, max: 60 }),
-    body("price").isFloat({ min: 0 }),
+    body("price").isFloat({ min: 0, max: 1000000 }),
+    body("image").optional().isString().isLength({ max: 1000 }),
+    body("description").optional().isString().isLength({ max: 1000 }),
+    body("details").optional().isString().isLength({ max: 3000 }),
+    body("available").optional().isBoolean(),
   ],
   (req, res) => {
     const errors = validationResult(req);
@@ -65,28 +69,48 @@ router.post(
   }
 );
 
-// Updates an existing product.
-router.put("/:id", requireAdmin, (req, res) => {
-  const existing = db.prepare("SELECT * FROM products WHERE id = ?").get(req.params.id);
-  if (!existing) return res.status(404).json({ error: "Product not found." });
+// Updates an existing product after validating every field that can change.
+router.put(
+  "/:id",
+  requireAdmin,
+  [
+    body("name").optional().isString().trim().isLength({ min: 1, max: 120 }),
+    body("cartName").optional().isString().trim().isLength({ min: 1, max: 120 }),
+    body("category").optional().isString().trim().isLength({ min: 1, max: 60 }),
+    body("price").optional().isFloat({ min: 0, max: 1000000 }),
+    body("available").optional().isBoolean(),
+    body("image").optional().isString().isLength({ max: 1000 }),
+    body("description").optional().isString().isLength({ max: 1000 }),
+    body("details").optional().isString().isLength({ max: 3000 }),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: "Please check the product details." });
+    const existing = db.prepare("SELECT * FROM products WHERE id = ?").get(req.params.id);
+    if (!existing) return res.status(404).json({ error: "Product not found." });
 
-  const p = { ...existing, ...req.body };
-  db.prepare(`
-    UPDATE products SET name=?, cart_name=?, category=?, price=?, available=?, image=?, description=?, details=?
-    WHERE id=?
-  `).run(
-    p.name,
-    p.cartName || p.cart_name,
-    p.category,
-    Number(p.price),
-    p.available === false ? 0 : p.available === true ? 1 : existing.available,
-    p.image,
-    p.description,
-    p.details,
-    req.params.id
-  );
-  res.json({ ok: true });
-});
+    const p = { ...existing, ...req.body };
+    try {
+      db.prepare(`
+        UPDATE products SET name=?, cart_name=?, category=?, price=?, available=?, image=?, description=?, details=?
+        WHERE id=?
+      `).run(
+        p.name,
+        p.cartName || p.cart_name,
+        p.category,
+        Number(p.price),
+        p.available === false || p.available === 0 ? 0 : p.available === true || p.available === 1 ? 1 : existing.available,
+        p.image || "",
+        p.description || "",
+        p.details || "",
+        req.params.id
+      );
+    } catch (_) {
+      return res.status(400).json({ error: "Product details could not be saved." });
+    }
+    res.json({ ok: true });
+  }
+);
 
 // Deletes a product from the menu.
 router.delete("/:id", requireAdmin, (req, res) => {

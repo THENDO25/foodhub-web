@@ -36,9 +36,9 @@ router.post(
   "/signup",
   authLimiter,
   [
-    body("name").trim().isLength({ min: 2, max: 100 }).withMessage("Enter your full name."),
-    body("email").trim().isEmail().withMessage("Enter a valid email.").normalizeEmail(),
-    body("password").isLength({ min: 6, max: 200 }).withMessage("Password must be at least 6 characters."),
+    body("name").isString().trim().isLength({ min: 2, max: 100 }).withMessage("Enter your full name."),
+    body("email").isString().trim().isEmail().withMessage("Enter a valid email.").normalizeEmail(),
+    body("password").isString().isLength({ min: 6, max: 200 }).withMessage("Password must be at least 6 characters."),
   ],
   (req, res) => {
     const errors = validationResult(req);

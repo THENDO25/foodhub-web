@@ -28,9 +28,9 @@ router.put(
   "/",
   requireAuth,
   [
-    body("name").trim().isLength({ min: 2, max: 100 }),
-    body("phone").optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
-    body("address").optional({ checkFalsy: true }).trim().isLength({ max: 300 }),
+    body("name").isString().trim().isLength({ min: 2, max: 100 }),
+    body("phone").optional({ checkFalsy: true }).isString().trim().isLength({ max: 40 }),
+    body("address").optional({ checkFalsy: true }).isString().trim().isLength({ max: 300 }),
   ],
   (req, res) => {
     const errors = validationResult(req);

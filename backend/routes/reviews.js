@@ -33,7 +33,10 @@ router.get("/", (req, res) => {
 router.post(
   "/",
   reviewLimiter,
-  [body("text").trim().isLength({ min: 1, max: 1000 })],
+  [
+    body("text").isString().trim().isLength({ min: 1, max: 1000 }),
+    body("rating").optional({ nullable: true }).isInt({ min: 1, max: 5 }),
+  ],
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ error: "Review text is required." });
@@ -52,7 +55,7 @@ router.post(
       req.session && req.session.userId ? req.session.userId : null,
       name,
       req.body.text,
-      req.body.rating ? Number(req.body.rating) : null
+      req.body.rating !== undefined && req.body.rating !== null && req.body.rating !== "" ? Number(req.body.rating) : null
     );
     const row = db.prepare("SELECT * FROM reviews WHERE id = ?").get(id);
     res.status(201).json({ review: toApi(row) });

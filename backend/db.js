@@ -1,4 +1,5 @@
 // db.js — SQLite schema + seeding.
+require("dotenv").config();
 // Every query in this project uses parameterized statements (via better-sqlite3's
 // `?` placeholders) specifically so string concatenation / SQL injection is not
 // possible from user input. Keep that pattern when you add new queries.
@@ -99,12 +100,19 @@ function seedProducts() {
 
 // --- Seed admin account (idempotent) --------------------------------------------
 function seedAdmin() {
-  const existing = db.prepare("SELECT id FROM users WHERE email = ?").get("admin@foodhub.com");
+  // A known placeholder/default password must never be accepted in production.
+  const configuredPassword = process.env.ADMIN_PASSWORD;
+  if (process.env.NODE_ENV === "production" &&
+      (!configuredPassword || configuredPassword === "admin123" || configuredPassword.startsWith("CHANGE_ME"))) {
+    console.error("FATAL: Set a unique ADMIN_PASSWORD in backend/.env before production use.");
+    process.exit(1);
+  }
+  // Use the configured email for both the existence check and insert.
+  const email = (process.env.ADMIN_EMAIL || "admin@foodhub.com").trim().toLowerCase();
+  const existing = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
   if (existing) return;
-  // Default credentials are intentionally weak (admin123) to match the original
-  // prototype, but they can — and for real use SHOULD — be overridden via env vars.
-  const email = (process.env.ADMIN_EMAIL || "admin@foodhub.com").toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || "admin123";
+  // The local-only fallback keeps a fresh demo easy to start; never deploy it.
+  const password = configuredPassword || "admin123";
   const hash = bcrypt.hashSync(password, 12);
   db.prepare(`
     INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'admin')
