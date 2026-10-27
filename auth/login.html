@@ -280,9 +280,9 @@
       try {
         await window.foodHubApi.post("/api/auth/signup", { name, email, password });
         window.foodHubSession.invalidate();
-        alert("Account created successfully. Please log in.");
         document.getElementById("signupForm").reset();
-        document.getElementById("switch-to-login").click();
+        alert("Account created successfully. You are now signed in.");
+        window.location.href = "../home/index.html";
       } catch (err) {
         alert(err.message || "Could not create your account.");
       } finally {

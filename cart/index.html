@@ -55,10 +55,11 @@
         <textarea placeholder="Delivery Address" id="address" required></textarea>
 
         <h3>Payment Method</h3>
+        <p class="payment-note">Demo checkout only. FoodHub does not process real card payments.</p>
         <div class="payment-options">
           <label>
             <input type="radio" name="payment" value="card" required />
-            Credit/Debit Card
+            Card payment (demo only)
           </label>
           <label>
             <input type="radio" name="payment" value="cod" />
@@ -66,11 +67,6 @@
           </label>
         </div>
 
-        <div id="card-info" class="hidden">
-          <input type="text" placeholder="Card Number" id="card-number" />
-          <input type="text" placeholder="Expiry Date (MM/YY)" id="expiry" />
-          <input type="text" placeholder="CVV" id="cvv" />
-        </div>
 
         <button type="submit" class="confirm-btn">Place Order</button>
         <button type="button" onclick="closeModal()" class="cancel-btn">Cancel</button>
@@ -87,65 +83,106 @@
   </script>
 
   <script>
-   // Cart contents stay client-side (localStorage) — that's normal and not a
-   // security concern, since nothing here is trusted: when the order is
-   // actually placed, POST /api/orders looks each item up in the database
-   // and recalculates the price and total itself. Editing `cart` in DevTools
-   // to change a price only changes what you see locally, not what you pay.
+   // Cart values are untrusted localStorage data. Render them only with DOM APIs.
    const cartItemsContainer = document.getElementById('cart-items');
-const totalElement = document.getElementById('total');
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
+   const totalElement = document.getElementById('total');
+   function readCart() {
+     try {
+       const value = JSON.parse(localStorage.getItem('cart') || '[]');
+       return Array.isArray(value) ? value.filter(item => item && typeof item === 'object') : [];
+     } catch (_) { return []; }
+   }
+   let cart = readCart();
 
-function renderCart() {
-  cartItemsContainer.innerHTML = '';
-  let total = 0;
+   function escapeEmailHtml(value) {
+     return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+   }
+   function safeImageSource(value) {
+     const raw = String(value || '').trim();
+     if (!raw) return '';
+     try {
+       const url = new URL(raw, window.location.href);
+       return (url.protocol === 'https:' || (url.protocol === 'http:' && url.origin === window.location.origin)) ? url.href : '';
+     } catch (_) { return ''; }
+   }
+   function persistCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
 
-  cart.forEach((item, index) => {
-    const itemName = item.name || item.title || 'Food item';
-    const itemImage = item.image || item.imgSrc || '';
-    const itemPrice = Number(item.price) || 0;
-    const itemQuantity = Number(item.quantity) || 1;
-    total += itemPrice * itemQuantity;
-    cartItemsContainer.innerHTML += `
-      <div class="cart-item">
-        <img src="${itemImage}" alt="${itemName}" />
-        <div class="item-details">
-          <h3>${itemName}</h3>
-          <p>R${itemPrice.toFixed(2)}</p>
-          <div>
-            <button onclick="updateQuantity(${index}, -1)">-</button>
-            ${itemQuantity}
-            <button onclick="updateQuantity(${index}, 1)">+</button>
-          </div>
-        </div>
-        <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
-      </div>
-    `;
-  });
+   function renderCart() {
+     cartItemsContainer.replaceChildren();
+     let total = 0;
+     cart.forEach((item, index) => {
+       const itemName = String(item.name || item.title || 'Food item');
+       const itemImage = safeImageSource(item.image || item.imgSrc);
+       const itemPrice = Number(item.price);
+       const price = Number.isFinite(itemPrice) && itemPrice >= 0 ? itemPrice : 0;
+       const quantity = Math.min(50, Math.max(1, Math.floor(Number(item.quantity) || 1)));
+       item.quantity = quantity;
+       total += price * quantity;
 
-  totalElement.textContent = `Total: R${total.toFixed(2)}`;
-}
+       const row = document.createElement('div');
+       row.className = 'cart-item';
+       const image = document.createElement('img');
+       image.src = itemImage;
+       image.alt = itemName;
+       image.loading = 'lazy';
+       const details = document.createElement('div');
+       details.className = 'item-details';
+       const heading = document.createElement('h3');
+       heading.textContent = itemName;
+       const priceText = document.createElement('p');
+       priceText.textContent = `R${price.toFixed(2)}`;
+       const quantityControls = document.createElement('div');
+       quantityControls.className = 'quantity-controls';
+       const minus = document.createElement('button');
+       minus.type = 'button';
+       minus.textContent = '−';
+       minus.setAttribute('aria-label', `Decrease ${itemName} quantity`);
+       minus.addEventListener('click', () => updateQuantity(index, -1));
+       const quantityText = document.createElement('span');
+       quantityText.textContent = String(quantity);
+       const plus = document.createElement('button');
+       plus.type = 'button';
+       plus.textContent = '+';
+       plus.setAttribute('aria-label', `Increase ${itemName} quantity`);
+       plus.addEventListener('click', () => updateQuantity(index, 1));
+       quantityControls.append(minus, quantityText, plus);
+       details.append(heading, priceText, quantityControls);
+       const remove = document.createElement('button');
+       remove.type = 'button';
+       remove.className = 'remove-btn';
+       remove.textContent = 'Remove';
+       remove.addEventListener('click', () => removeItem(index));
+       row.append(image, details, remove);
+       cartItemsContainer.appendChild(row);
+     });
+     persistCart();
+     totalElement.textContent = `Total: R${total.toFixed(2)}`;
+   }
 
-function updateQuantity(index, change) {
-  cart[index].quantity += change;
-  if (cart[index].quantity <= 0) {
-    cart.splice(index, 1);
-  }
-  localStorage.setItem('cart', JSON.stringify(cart));
-  renderCart();
-}
+   function updateQuantity(index, change) {
+     if (!cart[index]) return;
+     const current = Math.min(50, Math.max(1, Math.floor(Number(cart[index].quantity) || 1)));
+     const next = current + change;
+     if (next < 1) cart.splice(index, 1);
+     else cart[index].quantity = Math.min(50, next);
+     persistCart();
+     renderCart();
+   }
 
-function removeItem(index) {
-  cart.splice(index, 1);
-  localStorage.setItem('cart', JSON.stringify(cart));
-  renderCart();
-}
+   function removeItem(index) {
+     if (!Number.isInteger(index) || !cart[index]) return;
+     cart.splice(index, 1);
+     persistCart();
+     renderCart();
+   }
 
-function closeModal() {
-  document.getElementById('checkout-modal').classList.add('hidden');
-}
-
-renderCart();
+   function closeModal() {
+     document.getElementById('checkout-modal').classList.add('hidden');
+   }
+   window.closeModal = closeModal;
+   window.updateQuantity = updateQuantity;
+   window.removeItem = removeItem;
+   renderCart();
 
 // Prefill checkout with the signed-in customer's details.
 (async function prefillCheckout() {
@@ -227,39 +264,33 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
   const orderId = order.id;
   const orderTotal = order.total;
 
+  const emailItems = Array.isArray(order.products) ? order.products : [];
   let orderTableHTML = `
-  <table style="width: 100%; border-collapse: collapse;">
-    <thead>
-      <tr style="background-color: #f5f5f5;">
-        <th align="left" style="padding: 8px;">Image</th>
-        <th align="left" style="padding: 8px;">Item</th>
-        <th align="center" style="padding: 8px;">Qty</th>
-        <th align="right" style="padding: 8px;">Price</th>
-      </tr>
-    </thead>
-    <tbody>
-`;
-
-cart.forEach(item => {
-  orderTableHTML += `
-    <tr>
-      <td style="padding: 8px;"><img src="${item.image || item.imgSrc || ""}" alt="${item.name || item.title || "Food item"}" width="60" style="border-radius: 5px;" /></td>
-      <td style="padding: 8px;">${item.name || item.title || "Food item"}</td>
-      <td align="center" style="padding: 8px;">${Number(item.quantity) || 1}</td>
-      <td align="right" style="padding: 8px;">R${Number(item.price || 0).toFixed(2)}</td>
-    </tr>
-  `;
-});
-
-orderTableHTML += `
-    </tbody>
-  </table>
-`;
+  <table style="width:100%;border-collapse:collapse;">
+    <thead><tr style="background-color:#f5f5f5;">
+      <th align="left" style="padding:8px;">Image</th>
+      <th align="left" style="padding:8px;">Item</th>
+      <th align="center" style="padding:8px;">Qty</th>
+      <th align="right" style="padding:8px;">Price</th>
+    </tr></thead><tbody>`;
+  emailItems.forEach(item => {
+    const itemName = String(item.name || 'Food item');
+    const itemImage = safeImageSource(item.image || item.imgSrc);
+    const itemQuantity = Math.min(50, Math.max(1, Math.floor(Number(item.quantity) || 1)));
+    const itemPrice = Math.max(0, Number(item.price) || 0);
+    orderTableHTML += `<tr>
+      <td style="padding:8px;"><img src="${escapeEmailHtml(itemImage)}" alt="${escapeEmailHtml(itemName)}" width="60" style="border-radius:5px;" /></td>
+      <td style="padding:8px;">${escapeEmailHtml(itemName)}</td>
+      <td align="center" style="padding:8px;">${itemQuantity}</td>
+      <td align="right" style="padding:8px;">R${itemPrice.toFixed(2)}</td>
+    </tr>`;
+  });
+  orderTableHTML += '</tbody></table>';
 
 const orderDetails = {
-  user_name: name,
-  user_email: email,
-  user_address: address,
+  user_name: escapeEmailHtml(user.name || name),
+  user_email: escapeEmailHtml(user.email || email),
+  user_address: escapeEmailHtml(address),
   user_total: orderTotal.toFixed(2),
   order_id: orderId,
   order_html: orderTableHTML,
@@ -300,13 +331,6 @@ const orderDetails = {
   closeModal();
 });
 
-// Payment method toggle
-document.querySelectorAll('input[name="payment"]').forEach((input) => {
-  input.addEventListener('change', () => {
-    const cardInfo = document.getElementById('card-info');
-    cardInfo.classList.toggle('hidden', input.value !== 'card');
-  });
-});
 
   </script>
 

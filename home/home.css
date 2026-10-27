@@ -634,3 +634,8 @@ footer .foodhub-logo {
   color: #e91000;
 }
 
+
+
+/* Make saved favourites visible to the customer. */
+.bx-heart.active-heart { color: #e60023; }
+.bx-heart { cursor: pointer; }

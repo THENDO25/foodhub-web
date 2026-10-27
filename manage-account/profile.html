@@ -12,6 +12,7 @@
   <script src="../shared/navbar.js" defer></script>
   <script src="../shared/api.js"></script>
   <script src="../shared/session.js"></script>
+  <script src="../cart/cart.js" defer></script>
   <script src="../auth/auth.js" defer></script>
   <script src="profile.js" defer></script>
 </head>
@@ -55,6 +56,11 @@
           id="confirm-new-password" type="password" minlength="6" required><button class="secondary"
           type="submit">Update password</button></form>
       <p id="profile-message" role="status"></p>
+    </section>
+    <section class="profile-card order-card">
+      <h2>My Favourites</h2>
+      <p class="muted">Dishes saved from the home page and menu on this browser.</p>
+      <ul id="my-favourites" class="my-favourites-list"><li>No favourites yet.</li></ul>
     </section>
     <section class="profile-card order-card">
       <h2>My Orders</h2>

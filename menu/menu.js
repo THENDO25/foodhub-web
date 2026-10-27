@@ -25,7 +25,7 @@ async function renderCustomerMenu() {
   container.innerHTML = products.map(product => `
     <div class="${category === "Breakfast" ? "breakfast" : category === "Main Dish" ? "main-dish" : "desserts"}">
 
-      <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">
+      <img src="${escapeHtml(typeof safeImageUrl === "function" ? safeImageUrl(product.image) : "")}" alt="${escapeHtml(product.name)}" loading="lazy">
 
       <div class="innertxt">
 
@@ -39,7 +39,7 @@ async function renderCustomerMenu() {
         <div class="Activity-section-menu">
 
           <i class="bx bxs-food-menu view-popup"
-            data-image="${escapeHtml(product.image)}"
+            data-image="${escapeHtml(typeof safeImageUrl === "function" ? safeImageUrl(product.image) : "")}"
             data-title="${escapeHtml(product.name)}"
             data-price="R${Number(product.price).toFixed(2)}"
             data-description="${escapeHtml(product.description || "") }"
@@ -47,7 +47,7 @@ async function renderCustomerMenu() {
           </i>
 
           <i class="bx bx-heart view-fav"
-            data-image="${escapeHtml(product.image)}"
+            data-image="${escapeHtml(typeof safeImageUrl === "function" ? safeImageUrl(product.image) : "")}"
             data-title="${escapeHtml(product.name)}"
             data-price="R${Number(product.price).toFixed(2)}"
             data-description="${escapeHtml(product.description || "")}">
@@ -56,13 +56,27 @@ async function renderCustomerMenu() {
           <i class="bx bx-cart add-product-cart"
             data-name="${escapeHtml(product.cartName || product.name)}"
             data-price="${Number(product.price)}"
-            data-image="${escapeHtml(product.image)}">
+            data-image="${escapeHtml(typeof safeImageUrl === "function" ? safeImageUrl(product.image) : "")}">
           </i>
 
         </div>
       </div>
     </div>
   `).join("");
+
+  let savedFavorites = [];
+  try {
+    const saved = JSON.parse(localStorage.getItem("favorites") || "[]");
+    savedFavorites = Array.isArray(saved) ? saved : [];
+  } catch (_) { savedFavorites = []; }
+  container.querySelectorAll(".view-fav").forEach(icon => {
+    const title = icon.dataset.title;
+    const active = savedFavorites.some(item => (item.title || item.name) === title);
+    icon.classList.toggle("active-heart", active);
+    icon.setAttribute("aria-label", active ? "Remove from favourites" : "Add to favourites");
+    icon.setAttribute("role", "button");
+    icon.setAttribute("tabindex", "0");
+  });
 }
 
 function updateCartCount() {
@@ -140,25 +154,9 @@ function openProductPopup(icon) {
 }
 
 function toggleMenuFavorite(icon) {
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  const title = icon.dataset.title;
-  const index = favorites.findIndex(item => item.title === title);
-
-  if (index === -1) {
-    favorites.push({
-      title,
-      imgSrc: icon.dataset.image,
-      price: Number(String(icon.dataset.price).replace("R", "")),
-      description: icon.dataset.description
-    });
-
-    icon.classList.add("active-heart");
-  } else {
-    favorites.splice(index, 1);
-    icon.classList.remove("active-heart");
+  if (typeof window.toggleFoodHubFavorite === "function") {
+    window.toggleFoodHubFavorite(icon);
   }
-
-  localStorage.setItem("favorites", JSON.stringify(favorites));
 }
 
 function closeFavouriteList() {
