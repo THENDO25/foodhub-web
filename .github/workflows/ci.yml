@@ -1,0 +1,35 @@
+name: FoodHub CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test and build FoodHub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend packages
+        run: npm ci --prefix backend
+
+      - name: Run security tests
+        run: node --test tests/security.test.js
+
+      - name: Build Docker image
+        run: docker build -t foodhub-web:ci .
