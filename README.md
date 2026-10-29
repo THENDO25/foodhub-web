@@ -1,92 +1,45 @@
-# FoodHub — Cybersecurity Elective Project
+# FoodHub — Cybersecurity and Cloud Computing Elective
 
-FoodHub is a food-ordering website and REST API backed by SQLite. This version includes security-focused changes, a repeatable API regression test, a finding-by-finding review, and a practical manual retest guide.
+FoodHub is a food-ordering website built with a REST API and an SQLite database.
 
-## Requirements
+In this project, I focus on improving website security and exploring how cloud computing can be used to host and run web applications. I also test security features and learn how to prepare an application for deployment.
 
-- Node.js 20 or newer (Node 22 LTS is a good local choice)
-- npm
-- Linux, macOS, or Windows
+## Project Goals
 
-## Run the application
+- Protect user accounts and personal information.
+- Prevent common web attacks, such as cross-site scripting (XSS).
+- Validate orders and calculate prices securely on the server.
+- Control access to customer and admin features.
+- Use automated and manual tests to check security.
+- Explore cloud hosting and deployment.
+- Learn how to run and maintain a web application in a cloud environment.
 
-1. Extract the project ZIP.
-2. Open a terminal in the extracted `foodhub-web` folder.
-3. Install backend dependencies and create your local environment file:
+## Cybersecurity
 
-   ```bash
-   cd backend
-   npm install
-   cp .env.example .env
-   ```
+I worked on improving FoodHub's security through password hashing, session management, access control, input validation, safe content rendering, and security headers.
 
-4. Edit `backend/.env`. For a local demonstration, you can leave `NODE_ENV=development`. Set a unique admin password and a random session secret, for example:
+I also added automated security tests and a manual testing guide to help verify the changes.
 
-   ```bash
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
+## Cloud Computing
 
-   Copy the generated value into `SESSION_SECRET`.
+Cloud computing allows applications to run on remote servers instead of relying only on a local computer.
 
-5. Start the server:
+For FoodHub, cloud computing can be used to host the website and backend API, making the application accessible over the internet.
 
-   ```bash
-   npm start
-   ```
+Possible next steps include:
 
-6. Open **http://localhost:3000**. Use this same origin for every page. Do not open HTML files directly or use `python3 -m http.server`; login, sessions, orders, and the API require the Node server.
+- Deploying FoodHub to a cloud hosting platform.
+- Configuring environment variables and secrets securely.
+- Setting up HTTPS to protect data in transit.
+- Choosing suitable hosting and database services.
+- Learning how to monitor the application and manage backups.
 
-The app creates its SQLite database and seeds the product catalogue on first start. The database is intentionally not included in the ZIP, so the package does not contain a prior user's accounts, orders, reviews, or other local data.
+The current project runs locally. Cloud deployment and any cloud services should only be described as completed once they have actually been implemented and tested.
 
-### Local demo admin
+## Testing and Evidence
 
-If you do not create a `.env` file, the development-only fallback is `admin@foodhub.com` / `admin123`. Change it before sharing the app. If you copied `.env.example`, the configured `ADMIN_PASSWORD` is a placeholder and must be replaced with your own password before use. Production mode refuses the placeholder/default admin password and requires a `SESSION_SECRET`.
+I use automated and manual tests to check the security features. I will record the actual results and screenshots in `SECURITY-TESTING.md`.
 
-## Run the security regression test
+## Conclusion
 
-In a second terminal:
-
-```bash
-cd foodhub-web/backend
-npm test
-```
-
-The test creates a temporary database and test admin account; it does not use the normal FoodHub database. It checks:
-
-- security headers and public product catalogue
-- anonymous and customer access restrictions on protected APIs
-- HttpOnly/SameSite session cookies and password hashing
-- rejection of untrusted cross-origin mutation requests
-- server-side order price calculation and quantity validation
-- stored review payload persistence and review validation
-- admin-only product/customer/order access
-- prevention of static access to backend source and SQLite files
-- regression guards against known unsafe HTML render sinks in cart, favourites, and reviews
-
-## Project structure
-
-- `home/`, `menu/`, `cart/`, `manage-account/`, `reviews/` — website pages and frontend behavior
-- `shared/` — API client, session state, and product catalogue helpers
-- `admin/` — admin dashboard for orders, customers, products, and reviews
-- `backend/server.js` — Express server, security headers, CORS and origin checks, sessions, and static-file restrictions
-- `backend/routes/` — authentication, profile, products, orders, customers, and reviews APIs
-- `backend/db.js` — SQLite schema, seed products, and local admin account
-- `tests/security.test.js` — repeatable API security/regression test
-- `SECURITY-REVIEW.md` — findings, risks, mitigations, limitations, and retest evidence
-- `SECURITY-TESTING.md` — hands-on verification guide
-- `PROJECT-WALKTHROUGH.md` — presentation/story/scenario for the elective
-
-## Security notes
-
-- Customer passwords are hashed with bcrypt; the browser does not store passwords or role flags in localStorage.
-- Session cookies are HttpOnly and SameSite=Lax. Server middleware enforces customer/admin access.
-- Order totals are calculated from trusted product records on the server, not client-provided prices.
-- Cart, favourites, and review user text is rendered using DOM APIs/text nodes or escaped output.
-- The CSP has been improved but retains `'unsafe-inline'` to preserve legacy inline scripts and event handlers. See the review for the next hardening step.
-- EmailJS is a browser integration. Its public key is not a password, but restrict allowed origins and templates in the EmailJS dashboard before deployment.
-- The cart's card payment option is demo-only. This project does not process card payments and should not collect card numbers or CVV values.
-- The Express in-memory session store is for local learning only; use a persistent session store and HTTPS for a deployed system.
-
-## Evidence discipline
-
-Do not claim the entire application is secure because one test passed. Record the actual date, browser, command, result, and screenshot for each manual retest. The security report distinguishes automated checks from manual browser checks and remaining limitations.
+This project helps me develop practical skills in cybersecurity and cloud computing. I am learning how to build a safer web application, test its security, and prepare it for deployment in a cloud environment.

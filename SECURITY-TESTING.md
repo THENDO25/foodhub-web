@@ -1,8 +1,10 @@
 # FoodHub Security Testing Guide
 
-## 1. Start with a clean isolated test environment
+This guide explains how I test FoodHub's security features and check that the main website functions still work.
 
-The automated suite starts its own server with a temporary SQLite database and temporary admin account. It does not use or overwrite your normal FoodHub database.
+## 1. Run the Automated Security Test
+
+Open a terminal and run:
 
 ```bash
 cd backend
@@ -10,86 +12,131 @@ npm install
 npm test
 ```
 
-Expected result: one security regression test passes. If it fails, capture the failing assertion and fix it before claiming the control passed.
+The test uses a temporary database, so it does not change my normal FoodHub data.
 
-## 2. Start the application
+**Expected result:** The security test passes. If it fails, I check the error and fix the problem before marking the test as passed.
+
+## 2. Start FoodHub
+
+In the terminal, run:
 
 ```bash
 cd backend
 cp .env.example .env
 ```
 
-Edit `.env` and set a long random `SESSION_SECRET` and a new `ADMIN_PASSWORD`. For local demo only, you can keep `NODE_ENV=development`. Then run:
+Open `backend/.env` and set a new admin password and a strong, random `SESSION_SECRET`.
+
+Then start the server:
 
 ```bash
 npm start
 ```
 
-Open `http://localhost:3000` in one browser tab. Do not mix `localhost`, `127.0.0.1`, `file://`, or a separate Python web server in the same test; session cookies are origin-specific.
+Open `http://localhost:3000` in your browser.
 
-## 3. Manual browser retests
+**Important:** Use the same address throughout testing. Do not open the HTML files directly or use another web server.
 
-### A. DOM-based XSS in cart/favourites
+## 3. Manual Security Tests
 
-1. Sign up and sign in.
-2. Open DevTools → Console and run:
+### A. Cart and Favourites Security (XSS)
 
-   ```js
-   localStorage.setItem('cart', JSON.stringify([{name:'<img src=x onerror=alert(1)>',price:1,image:'javascript:alert(2)',quantity:1}]));
-   location.href = '/cart/index.html';
-   ```
+This test checks whether unsafe content stored in the browser can run as code.
 
-3. Expected: the name is displayed as text, no alert appears, and the image source is rejected. Clear the test data afterward with `localStorage.removeItem('cart')`.
-4. Repeat for favourites:
+1. Sign in to FoodHub.
+2. Open your browser's Developer Tools and select Console.
+3. Enter the following test:
 
-   ```js
-   localStorage.setItem('favorites', JSON.stringify([{title:'<img src=x onerror=alert(1)>',price:1,imgSrc:'javascript:alert(2)'}]));
-   location.href = '/manage-account/profile.html';
-   ```
-
-   Expected: the title is text; no alert appears. Remove the test entry afterward.
-
-### B. Stored XSS in reviews
-
-1. Open Reviews while signed in or signed out.
-2. Submit this harmless test string as a review:
-
-   ```html
-   <img src=x onerror=alert(1)> <script>alert(2)</script>
-   ```
-
-3. Expected: no alert executes. The review is visible as literal text on the customer page and in the admin Reviews section.
-4. Reload the Reviews page to verify the persisted review is still displayed as text.
-
-### C. Authorization and price integrity
-
-1. Sign out and try to open `/admin/admin.html`; the UI should redirect to login.
-2. In DevTools Console while signed out, try `fetch('/api/orders').then(r => r.status)`; expected `401`.
-3. Sign in as a customer and try `fetch('/api/admin/customers').then(r => r.status)`; expected `403`.
-4. Place an order, then inspect the order in Admin → Orders. The total must match the database catalogue, not a client-side price edit.
-
-### D. CSP and security headers
-
-Run in a terminal:
-
-```bash
-curl -s -D - -o /dev/null http://localhost:3000/
+```javascript
+localStorage.setItem('cart', JSON.stringify([
+  {name:'<img src=x onerror=alert(1)>',price:1,image:'javascript:alert(2)',quantity:1}
+]));
+location.href = '/cart/index.html';
 ```
 
-Check `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy`. CSP currently retains `'unsafe-inline'` for compatibility; document that as remaining work rather than claiming strict CSP completion.
+**Expected result:** The product name appears as text, no alert appears, and the unsafe image URL is rejected.
 
-### E. Core regression checklist
+After testing, clear the test data:
 
-- [ ] Customer signup and sign-in work.
-- [ ] Sign out clears the server session.
-- [ ] Customer can favourite on Home and Menu.
-- [ ] Account → My Favourites lists saved dishes and allows removal.
-- [ ] Cart plus/minus/remove controls work and totals update.
-- [ ] Empty cart cannot be checked out.
-- [ ] Checkout requires a customer session.
-- [ ] Order appears in Account → My Orders and Admin → Orders.
-- [ ] Admin can create/edit/toggle/delete products and changes appear on Menu.
-- [ ] Customer cannot call admin-only APIs.
-- [ ] Review test payload remains plain text on customer and admin views.
+```javascript
+localStorage.removeItem('cart');
+```
 
-Record actual outcomes, browser, date, and screenshots for your elective evidence.
+Repeat a similar test for favourites:
+
+```javascript
+localStorage.setItem('favorites', JSON.stringify([
+  {title:'<img src=x onerror=alert(1)>',price:1,imgSrc:'javascript:alert(2)'}
+]));
+location.href = '/manage-account/profile.html';
+```
+
+**Expected result:** The title appears as text, and no alert appears.
+
+Remove the test data afterwards:
+
+```javascript
+localStorage.removeItem('favorites');
+```
+
+### B. Review Security (Stored XSS)
+
+This test checks whether unsafe content in reviews can run as code.
+
+1. Open the Reviews page.
+2. Submit this test string as a review:
+
+```html
+<img src=x onerror=alert(1)> <script>alert(2)</script>
+```
+
+3. Check the customer Reviews page and the admin Reviews section.
+4. Reload the pages and check again.
+
+**Expected result:** The review appears as plain text, and no alert appears.
+
+### C. Login, Permissions and Order Prices
+
+1. Sign out and try opening `/admin/admin.html`. The page should redirect you to login.
+2. While signed out, open the browser Console and run:
+
+```javascript
+fetch('/api/orders').then(r => r.status)
+```
+
+Expected result: `401` because you are not logged in.
+
+3. Sign in as a customer and run:
+
+```javascript
+fetch('/api/admin/customers').then(r => r.status)
+```
+
+Expected result: `403` because customers cannot access this admin-only API.
+
+4. Place an order and check it in Admin → Orders.
+
+**Expected result:** The order total matches the prices stored in the database, not prices changed in the browser.
+
+
+## 4. Main Website Testing Checklist
+
+After the security tests, check that the main features still work.
+
+- [ ] Customer signup and login work.
+- [ ] Logging out ends the session.
+- [ ] Customers can favourite dishes on Home and Menu.
+- [ ] My Favourites displays saved dishes and allows removal.
+- [ ] Cart quantity and remove buttons work correctly.
+- [ ] Empty carts cannot be checked out.
+- [ ] Customers must log in before placing orders.
+- [ ] Orders appear in My Orders and Admin → Orders.
+- [ ] Admin can add, edit, enable, disable and delete products.
+- [ ] Product changes appear on the Menu page.
+- [ ] Customers cannot access admin-only APIs.
+- [ ] Review test content appears as text on customer and admin pages.
+
+
+## Conclusion
+
+These tests help me check whether my FoodHub security improvements work as expected. They also help me find problems and collect evidence for my cybersecurity elective.

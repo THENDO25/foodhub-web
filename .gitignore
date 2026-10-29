@@ -1,0 +1,28 @@
+# Protected environment files and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Excluded dependencies
+node_modules/
+**/node_modules/
+
+# Excluded local databases and backups
+backend/data/*.db
+backend/data/*.db-*
+*.sqlite
+*.sqlite3
+
+# Excluded logs
+*.log
+npm-debug.log*
+
+# Exclude operating system files
+.DS_Store
+Thumbs.db
+
+# Exclude local editor settings
+.vscode/

@@ -1,101 +1,79 @@
-# FoodHub Cybersecurity Elective — Project Walkthrough
+# FoodHub Cybersecurity Elective
 
-## 1. The problem
+## 1. The Problem
 
-The original website was a food ordering application with cart items, favourites, reviews, customers, products, and orders. Browser storage and HTML rendering create security risks when data is treated as trustworthy. A user can edit `localStorage`, and review text may contain markup that should be shown as text rather than interpreted as code.
+FoodHub is a food ordering website where users can browse food, save favourites, write reviews, and place orders.
 
-## 2. Project goal
+I identified security risks, such as users changing prices in the browser, unsafe review content, and unauthorized access to customer or admin information.
 
-Build and demonstrate a safer web application that:
+## 2. Project Goal
 
-1. Keeps accounts and business records in a server-side SQLite database.
-2. Uses server-managed sessions and role checks for protected operations.
-3. renders cart, favourites, and review text safely.
-4. Recalculates order totals using the server's product catalogue.
-5. Validates incoming API data and rejects untrusted browser origins for mutations.
-6. Applies browser security headers and prevents direct downloads of backend/database files.
-7. Provides repeatable tests and a manual evidence checklist.
+My goal is to make FoodHub safer by:
 
-## 3. Architecture
+- Storing important data in an SQLite database.
+- Protecting accounts with sessions and role-based access.
+- Preventing unsafe content from running as code.
+- Making sure the server calculates order prices correctly.
+- Validating user input and blocking untrusted requests.
+- Adding security headers and protecting backend files.
+- Testing the security features.
 
-```mermaid
-flowchart TD
-  Browser[FoodHub browser pages] --> API[Express REST API]
-  Browser --> Local[Cart and favourites in localStorage]
-  API --> Auth[Session and role middleware]
-  Auth --> Routes[Auth, profile, products, orders, reviews]
-  Routes --> DB[(SQLite database)]
-  Admin[Admin dashboard] --> API
-  API --> Headers[Helmet security headers]
-```
+## 3. How It Works
 
-Cart and favourites are convenient browser-side selections, not trusted order data. The server looks up the selected products and calculates the final total when checkout is submitted.
+FoodHub uses a browser, an Express server, and an SQLite database.
 
-## 4. Security controls to explain
+The browser sends requests to the server, which checks permissions and processes the data.
 
-### DOM-based XSS
+Cart items and favourites are stored in the browser, but the server checks product prices before saving an order.
 
-**Risk:** code inserts localStorage values into `innerHTML`, so markup controlled by a browser user may be parsed.
+## 4. Security Features
 
-**Mitigation:** create elements with `document.createElement`, put untrusted labels into `textContent`, and validate image URLs. Cart and favourites are localStorage values and must always be treated as untrusted.
+### Cross-Site Scripting (XSS)
+I made changes to display user input as text instead of allowing it to run as code. This helps protect customers and admins from malicious content in reviews.
 
-### Stored XSS in reviews
+### Authentication and Authorization
+I use sessions and role checks to protect accounts and admin features. Customers cannot access admin-only functions.
 
-**Risk:** review text is saved to SQLite, then later shown to customers or administrators. If it is parsed as HTML, a stored payload can affect every person who views it.
+### Price Manipulation
+The server gets prices from the database and calculates the order total. This prevents users from changing prices in the browser to get cheaper orders.
 
-**Mitigation:** review text is persisted as data and rendered with text nodes. The admin view escapes dynamic values before template insertion. Review submissions are length-limited and rate-limited.
+### Request Protection
+I added checks to help block requests from untrusted websites and configured security settings for browser requests.
 
-### Authentication and authorization
+### Security Headers
+I use Helmet to add security headers and restrict access to sensitive backend files.
 
-**Risk:** hiding admin links or changing a role in browser storage is not access control.
+## 5. How I Demonstrate the Project
 
-**Mitigation:** the server creates an HttpOnly session cookie and checks the session role on admin APIs. Customers cannot access admin orders, customer records, or product-write endpoints.
+1. Start FoodHub and create a customer account.
+2. Save favourite dishes and show that they remain available after reloading.
+3. Add food to the cart and place an order.
+4. Explain how the server checks prices and calculates the total.
+5. Log in as admin and show the order.
+6. Submit a test review containing HTML and show that it appears as text instead of running as code.
+7. Run `npm test` and show the results.
 
-### Price manipulation
+## 6. Evidence
 
-**Risk:** a browser user can edit cart prices and quantities in DevTools.
+I will collect:
 
-**Mitigation:** the API accepts product names and quantities, looks up trusted prices in SQLite, checks quantity limits, and calculates the total server-side.
+- A screenshot of the passing automated tests.
+- A screenshot of my saved favourites.
+- A screenshot of the review security test.
+- A screenshot of an order in the admin dashboard.
+- Terminal output showing the security headers.
+- My completed `SECURITY-TESTING.md` checklist.
 
-### CSRF/CORS and browser boundaries
+## 7. Limitations
 
-**Risk:** a malicious site may attempt to make requests using a signed-in browser.
+- Some inline scripts are still allowed by the Content Security Policy. I can improve this later.
+- EmailJS needs its own security settings.
+- Sessions are stored in memory and reset when the server restarts.
+- The card payment option is only a demonstration. Real payments are not supported.
+- Automated tests only cover the cases they test, so I must also complete the manual security checks.
 
-**Mitigation:** CORS grants access only to configured origins; mutation requests carrying an Origin must be same-origin or explicitly allowed; session cookies are HttpOnly and SameSite=Lax. CORS alone is not authentication and is not a substitute for authorization.
+## Conclusion
 
-### Security headers and static file exposure
+This project helped me understand common could computing,web security risks and how to reduce them. I worked on protecting user accounts, validating orders, handling user input safely, and testing security features.
 
-**Risk:** weak browser policy may permit unwanted content or framing; a static server can accidentally expose implementation files or the database.
-
-**Mitigation:** Helmet sets CSP and other headers, CSP disallows objects and framing, and requests for backend, Git metadata, and test paths are denied by the static server.
-
-## 5. Demonstration scenario
-
-**Scenario:** A customer signs up, saves two dishes, places an order, and submits a review. An administrator views the customer/order/review and manages products.
-
-1. Start the server and sign up as a customer.
-2. Favourite a dish on Home, then favourite another dish on Menu.
-3. Open Account → My Favourites and show both dishes. Remove one and reload.
-4. Add a product to the cart, change quantity, and proceed to checkout. Explain that the backend recalculates price and total.
-5. Place the order and show it in Account → My Orders.
-6. Sign in as admin and show the customer and order in the dashboard.
-7. Submit a harmless review test string: `<img src=x onerror=alert(1)> <script>alert(2)</script>`.
-8. Show that it is displayed as literal text on customer and admin review views, not executed.
-9. Run `npm test` and show the automated security test result.
-
-## 6. Evidence to collect
-
-- Screenshot of the passing `npm test` output.
-- Screenshot of the saved favourites list.
-- Screenshot of the review test string displayed literally.
-- Screenshot of the order in the admin dashboard.
-- Terminal output from the security-header `curl` command.
-- Completed manual checklist in `SECURITY-TESTING.md` with actual results and date.
-
-## 7. Honest limitations to state
-
-- CSP still permits inline scripts for compatibility; a next step is to move inline code and event handlers into external scripts, then remove `'unsafe-inline'` or use nonces/hashes.
-- EmailJS is browser-side and must be restricted by origin/template in its own dashboard.
-- Sessions use Express's in-memory store and reset on restart; this is unsuitable for a production multi-instance deployment.
-- The payment option is only a demo label; no real card payment integration exists.
-- Automated tests prove only the cases they exercise. Complete and record the manual browser checklist before presenting the whole application as tested.
+My goal is to keep improving FoodHub and apply what I have learned about cybersecurity and cloud computing.

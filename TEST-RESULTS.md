@@ -1,20 +1,46 @@
 # FoodHub Test Results
 
-## Automated checks performed
+## 1. Automated Tests
 
-- JavaScript syntax checks passed for the changed frontend scripts, backend server, database setup, and API route files.
-- `node --test tests/security.test.js` passed under Node.js v24.11.1 in the isolated test environment: **1 test passed, 0 failed**.
-- The test creates a temporary SQLite database and temporary admin account, then verifies security headers, session cookie attributes, hashed passwords, access control, CORS/Origin behavior, server-calculated order totals, validation, stored review data handling, static-file restrictions, and selected unsafe-render regression guards.
+I ran the following tests on FoodHub:
 
-## Not yet independently verified
+- JavaScript syntax checks passed for the updated frontend and backend files.
+- The security test passed using Node.js v24.11.1.
+- **Test results: 1 passed, 0 failed.**
 
-- A full visual browser walkthrough of every customer/admin feature was not completed in the build environment. Use the checklist in `SECURITY-TESTING.md` on your own machine and record the actual outcomes before presenting the project as fully regression-tested.
-- The automated test suite does not prove that every browser layout, external EmailJS template, or payment-related workflow works. EmailJS and payment options should be demonstrated as configured or demo-only, respectively.
+The automated test checks important security features, including:
 
-## Reproduce
+- Password hashing and session security.
+- Customer and admin access restrictions.
+- Protection against untrusted requests.
+- Correct order prices and totals.
+- Input validation and review security.
+- Security headers and protection of backend files.
+
+The test uses a temporary database and admin account, so it does not affect my normal FoodHub data.
+
+## 2. Tests Still to Complete
+
+I have not yet completed a full manual test of every customer and admin feature in the browser.
+
+I still need to use `SECURITY-TESTING.md` to check the website and record the actual results.
+
+The automated tests also do not confirm that every page layout, EmailJS feature, or payment-related workflow works correctly.
+
+EmailJS needs to be checked separately, and card payments are only a demonstration.
+
+## 3. How to Run the Tests
+
+Open a terminal in the project folder and run:
 
 ```bash
 cd backend
 npm install
 npm test
 ```
+
+## Conclusion
+
+The automated security test passed, which shows that the security checks covered by the test are working as expected.
+
+I still need to complete the manual browser tests to check the remaining features before considering the project fully tested.
