@@ -161,7 +161,28 @@
     if (popup) popup.classList.add("hidden");
   }
 
+  // Popup "ADD TO CART" button (menu + home pages). This handler existed in the
+  // original project and was lost when cart.js was rewritten, which left the
+  // button doing nothing. Login gating still happens in auth/auth.js (capture phase).
+  function bindPopupAddToCart() {
+    const button = document.querySelector(".addtocart");
+    if (!button || button.dataset.bound === "true") return;
+    button.dataset.bound = "true";
+    button.addEventListener("click", () => {
+      const titleNode = document.getElementById("popup-title");
+      const imageNode = document.getElementById("popup-img");
+      const priceNode = document.getElementById("popup-price");
+      const quantityNode = document.querySelector(".popup-quantity-container .number");
+      const title = String((titleNode && titleNode.textContent) || "").trim();
+      const price = Number(String((priceNode && priceNode.textContent) || "").replace(/[^\d.]/g, ""));
+      const quantity = parseInt(quantityNode && quantityNode.textContent, 10) || 1;
+      if (!title || !Number.isFinite(price)) return;
+      addToCart(title, price, imageNode ? imageNode.getAttribute("src") : "", quantity);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    bindPopupAddToCart();
     // Static cards use this delegated handler; dynamic .view-fav cards are handled by menu/menu.js.
     document.addEventListener("click", event => {
       const icon = event.target.closest(".Activity-section-menu .bx-heart:not(.view-fav)");

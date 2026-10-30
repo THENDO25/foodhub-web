@@ -7,11 +7,12 @@
   "scripts": {
     "start": "node server.js",
     "seed": "node db.js --seed-only",
-    "test": "node --test ../tests/security.test.js"
+    "test": "node --test ../tests/security.test.js ../tests/password-policy.test.js",
+    "set-admin-password": "node scripts/set-admin-password.js"
   },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
     "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -19,6 +20,7 @@
     "express-rate-limit": "^7.4.0",
     "express-session": "^1.18.0",
     "express-validator": "^7.2.0",
-    "helmet": "^7.1.0"
+    "helmet": "^7.1.0",
+    "validator": "^13.15.35"
   }
 }

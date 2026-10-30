@@ -2,7 +2,9 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const rateLimit = require("express-rate-limit");
 const { body, validationResult } = require("express-validator");
+const validator = require("validator");
 const db = require("../db");
+const { validatePassword } = require("../utils/password-policy");
 
 const router = express.Router();
 
@@ -17,8 +19,14 @@ const authLimiter = rateLimit({
   message: { error: "Too many attempts. Try again later." },
 });
 
+// Account lockout: 5 wrong passwords lock that account for 15 minutes. This is
+// separate from the per-IP rate limit above, so it also stops a distributed guess.
 const MAX_FAILED_LOGINS = 5;
 const LOCK_MINUTES = 15;
+
+// Compared against when the email does not exist, so a missing account takes about
+// as long to answer as a wrong password (avoids a timing hint for account discovery).
+const DUMMY_HASH = bcrypt.hashSync("not-a-real-password-timing-only", 12);
 
 function publicUser(row) {
   return {
@@ -38,7 +46,13 @@ router.post(
   [
     body("name").isString().trim().isLength({ min: 2, max: 100 }).withMessage("Enter your full name."),
     body("email").isString().trim().isEmail().withMessage("Enter a valid email.").normalizeEmail(),
-    body("password").isString().isLength({ min: 6, max: 200 }).withMessage("Password must be at least 6 characters."),
+    body("password")
+      .isString().withMessage("Enter a password.")
+      .custom((value, { req }) => {
+        const problem = validatePassword(value, { email: req.body.email, name: req.body.name });
+        if (problem) throw new Error(problem);
+        return true;
+      }),
   ],
   (req, res) => {
     const errors = validationResult(req);
@@ -81,21 +95,41 @@ router.post(
     const email = req.body.email.trim().toLowerCase();
     const password = req.body.password;
 
-    const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+    // Signup stores the normalized email (e.g. dots/+tags removed for Gmail),
+    // so try the email as typed first, then its normalized form.
+    const normalized = validator.normalizeEmail(email) || email;
+    const user =
+      db.prepare("SELECT * FROM users WHERE email = ?").get(email) ||
+      db.prepare("SELECT * FROM users WHERE email = ?").get(normalized);
 
     // Same generic error whether the email doesn't exist or the password is
     // wrong — don't let an attacker use this endpoint to enumerate accounts.
     const genericError = { error: "Invalid email or password." };
 
-    if (!user) return res.status(401).json(genericError);
+    if (!user) {
+      bcrypt.compareSync(password, DUMMY_HASH);
+      return res.status(401).json(genericError);
+    }
 
-    if (user.locked_until && new Date(user.locked_until) > new Date()) {
-      return res.status(423).json({ error: "Account temporarily locked. Try again later." });
+    let failedBefore = user.failed_logins;
+    if (user.locked_until) {
+      const remainingMs = new Date(user.locked_until) - new Date();
+      if (remainingMs > 0) {
+        const minutes = Math.ceil(remainingMs / 60000);
+        res.set("Retry-After", String(Math.ceil(remainingMs / 1000)));
+        return res.status(423).json({
+          error: `Too many failed attempts. Try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`,
+        });
+      }
+      // The lock has expired: start counting from zero again. Without this reset the
+      // stored counter stayed at 5, so the very first typo after a lock re-locked the account.
+      failedBefore = 0;
+      db.prepare("UPDATE users SET failed_logins = 0, locked_until = NULL WHERE id = ?").run(user.id);
     }
 
     const ok = bcrypt.compareSync(password, user.password_hash);
     if (!ok) {
-      const failed = user.failed_logins + 1;
+      const failed = failedBefore + 1;
       let lockedUntil = null;
       if (failed >= MAX_FAILED_LOGINS) {
         lockedUntil = new Date(Date.now() + LOCK_MINUTES * 60 * 1000).toISOString();

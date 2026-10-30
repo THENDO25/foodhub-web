@@ -13,6 +13,8 @@ require("./db"); // creates tables + seeds products/admin on boot
 const app = express();
 const PORT = process.env.PORT || 3000;
 const IS_PROD = process.env.NODE_ENV === "production";
+// Set FORCE_HTTPS=true once a TLS reverse proxy (Caddy/nginx/ALB) fronts the app.
+const FORCE_HTTPS = process.env.FORCE_HTTPS === "true" || process.env.COOKIE_SECURE === "true";
 
 // Session secret: require one in production, generate a throwaway one in dev
 // so the app still boots, but print a loud warning so it's never missed.
@@ -24,6 +26,11 @@ if (!SESSION_SECRET) {
   }
   SESSION_SECRET = crypto.randomBytes(32).toString("hex");
   console.warn("WARNING: SESSION_SECRET not set — using a random dev-only secret (sessions reset on restart).");
+}
+
+if (IS_PROD && /^(SESSION_SECRET|CHANGE_ME)/.test(SESSION_SECRET)) {
+  console.error("FATAL: SESSION_SECRET is still a placeholder. Generate one with: openssl rand -hex 32");
+  process.exit(1);
 }
 
 // Trust a single reverse proxy only in production deployments. Keep local
@@ -48,7 +55,11 @@ app.use(
         baseUri: ["'self'"],
         formAction: ["'self'"],
         frameAncestors: ["'none'"],
-        ...(IS_PROD ? { upgradeInsecureRequests: [] } : {}),
+        // Helmet adds upgrade-insecure-requests by default. Over plain HTTP on a real
+        // host (e.g. http://<server-ip>:3000) the browser then rewrites every script,
+        // CSS and API request to https:// and the site fails to load. Only send it
+        // when HTTPS is really in front of the app.
+        upgradeInsecureRequests: FORCE_HTTPS ? [] : null,
       },
     },
   })
@@ -86,7 +97,13 @@ app.use((req, res, next) => {
   if (!origin) return next(); // non-browser clients may omit Origin
   let originUrl;
   try { originUrl = new URL(origin); } catch (_) { return res.status(403).json({ error: "Untrusted request origin." }); }
-  const sameOrigin = originUrl.host === req.get("host") && ["http:", "https:"].includes(originUrl.protocol);
+  // Behind a reverse proxy the Host header is often rewritten to the upstream
+  // (127.0.0.1:3000) while the browser Origin is the public domain, which made
+  // every login/signup POST fail with 403. Also accept the forwarded public host,
+  // but only when a proxy is trusted (production).
+  const hosts = [req.get("host")];
+  if (IS_PROD && req.get("x-forwarded-host")) hosts.push(req.get("x-forwarded-host").split(",")[0].trim());
+  const sameOrigin = hosts.includes(originUrl.host) && ["http:", "https:"].includes(originUrl.protocol);
   if (!sameOrigin && !allowedOrigins.includes(origin)) return res.status(403).json({ error: "Untrusted request origin." });
   next();
 });
@@ -100,7 +117,12 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: "lax",
-      secure: IS_PROD, // requires HTTPS in production
+      // "auto" sends the Secure flag only when the request really arrived over
+      // HTTPS (behind a TLS proxy this works via `trust proxy` above). A hard
+      // `secure: IS_PROD` made the browser silently drop the cookie whenever
+      // the production build was opened over plain http (localhost / Docker
+      // on 127.0.0.1), so sign-in "succeeded" but never stuck.
+      secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : "auto",
       maxAge: 1000 * 60 * 60 * 8, // 8 hours
     },
     // NOTE: this uses express-session's in-memory store, which is fine for

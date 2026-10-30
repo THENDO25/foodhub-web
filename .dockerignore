@@ -17,6 +17,7 @@ node_modules
 *.log
 backend/data/*.db
 backend/data/*.db-*
+foodhub-backup.db
 
 # Exclude editor and operating system files
 .vscode

@@ -87,3 +87,36 @@ GitHub Actions runs `npm test` using a temporary test database. The workflow doe
 - CloudWatch logs and a tested alarm.
 - A documented backup/restore or recovery test.
 - A short architecture diagram and an explanation of trade-offs and costs.
+
+## Troubleshooting: sign-in / login problems after moving to Docker
+
+1. **Old accounts, orders and edited menu items are missing.** Docker starts with a fresh, empty
+   `foodhub_data` volume, so it does not contain the database from the non-Docker project. To import
+   it (stop the app first, run from the project root, and adjust the path to your old `foodhub.db`):
+
+   ```bash
+   docker compose down
+   docker run --rm -v foodhubs-web_foodhub_data:/data -v "/path/to/old/foodhub-web/backend/data":/src alpine \
+     sh -c "cp /src/foodhub.db /data/foodhub.db && chown 1000:1000 /data/foodhub.db"
+   docker compose up -d
+   ```
+
+   (The volume name is `<project-folder>_foodhub_data`; check with `docker volume ls`.)
+
+2. **Admin password.** On a fresh database the admin password is `ADMIN_PASSWORD` from `backend/.env`,
+   not `admin123`. An imported old database keeps its old admin password (`admin123` if you never
+   changed it). Apply the `.env` password with:
+
+   ```bash
+   docker compose exec foodhub npm --prefix backend run set-admin-password
+   ```
+
+3. **Site has no styling / sign-in does nothing when opened at `http://<server-ip>:3000`.** The app only
+   sends `upgrade-insecure-requests` and the Secure-cookie flag when `FORCE_HTTPS=true` is set. Leave it
+   unset while testing over plain HTTP; set it once HTTPS (Caddy/nginx/ALB) is in front of the app.
+
+4. **Sign-in returns "Untrusted request origin" (403) behind a reverse proxy.** The proxy must forward
+   `Host` or `X-Forwarded-Host` (Caddy does by default; with nginx add
+   `proxy_set_header Host $host;` or `proxy_set_header X-Forwarded-Host $host;`).
+
+5. `CORS_ORIGIN` is only needed when the frontend is hosted on a different origin than the API.

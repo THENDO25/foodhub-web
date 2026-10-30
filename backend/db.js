@@ -103,7 +103,7 @@ function seedAdmin() {
   // A known placeholder/default password must never be accepted in production.
   const configuredPassword = process.env.ADMIN_PASSWORD;
   if (process.env.NODE_ENV === "production" &&
-      (!configuredPassword || configuredPassword === "admin123" || configuredPassword.startsWith("CHANGE_ME"))) {
+      (!configuredPassword || configuredPassword === "admin123" || configuredPassword === "ADMIN_PASSWORD" || configuredPassword.startsWith("CHANGE_ME"))) {
     console.error("FATAL: Set a unique ADMIN_PASSWORD in backend/.env before production use.");
     process.exit(1);
   }

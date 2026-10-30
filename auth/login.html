@@ -190,9 +190,12 @@
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (10+ characters, letters and numbers)"
             id="signup-password"
             required
+            minlength="10"
+            maxlength="72"
+            autocomplete="new-password"
           >
 
           <i
@@ -265,6 +268,17 @@
       if (button) button.disabled = busy;
     }
 
+    // Instant feedback only. The server enforces the real policy
+    // (backend/utils/password-policy.js) and is the authority.
+    function checkPasswordRules(password, email, name) {
+      if (password.length < 10) return "Password must be at least 10 characters.";
+      if (new TextEncoder().encode(password).length > 72) return "Password is too long (maximum 72 bytes).";
+      if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) return "Password must include at least one letter and one number.";
+      const local = email.split("@")[0];
+      if (local.length >= 3 && password.toLowerCase().includes(local)) return "Password must not contain your email name.";
+      return "";
+    }
+
     // Save registered customers so the admin Customers page can use real records.
     document.getElementById("signupForm").addEventListener("submit", async function (event) {
       event.preventDefault();
@@ -273,7 +287,8 @@
       const password = document.getElementById("signup-password").value;
       const confirmPassword = document.getElementById("confirm-password").value;
       if (name.length < 2) return alert("Please enter your full name.");
-      if (password.length < 6) return alert("Use a password with at least 6 characters.");
+      const passwordProblem = checkPasswordRules(password, email, name);
+      if (passwordProblem) return alert(passwordProblem);
       if (password !== confirmPassword) return alert("Passwords do not match.");
 
       setFormBusy(this, true);

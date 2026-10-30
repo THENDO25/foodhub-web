@@ -1,10 +1,21 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const rateLimit = require("express-rate-limit");
 const { body, validationResult } = require("express-validator");
+const { validatePassword } = require("../utils/password-policy");
 const db = require("../db");
 const { requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
+
+// Guessing the current password through a hijacked session is still guessing.
+const passwordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many password attempts. Try again later." },
+});
 
 // All routes here use req.session.userId (server-side) to know WHICH account
 // to read/write — never an id or email taken from the request body/query.
@@ -50,9 +61,18 @@ router.put(
 router.put(
   "/password",
   requireAuth,
+  passwordLimiter,
   [
-    body("currentPassword").notEmpty(),
-    body("newPassword").isLength({ min: 6, max: 200 }).withMessage("Use at least 6 characters for the new password."),
+    body("currentPassword").isString().notEmpty(),
+    body("newPassword")
+      .isString().withMessage("Enter a new password.")
+      .custom((value, { req }) => {
+        const account = db.prepare("SELECT name, email FROM users WHERE id = ?").get(req.session.userId) || {};
+        const problem = validatePassword(value, account);
+        if (problem) throw new Error(problem);
+        if (value === req.body.currentPassword) throw new Error("Choose a password different from your current one.");
+        return true;
+      }),
   ],
   (req, res) => {
     const errors = validationResult(req);
