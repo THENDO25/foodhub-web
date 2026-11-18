@@ -12,6 +12,7 @@
   <script src="../shared/navbar.js" defer></script>
   <script src="../shared/api.js"></script>
   <script src="../shared/session.js"></script>
+  <script src="../cart/cart.js" defer></script>
   <script src="../auth/auth.js" defer></script>
   <script src="profile.js" defer></script>
 </head>
@@ -51,10 +52,15 @@
       <h2>Change password</h2>
       <form id="password-form"><label for="current-password">Current password</label><input id="current-password"
           type="password" required><label for="new-password">New password</label><input id="new-password"
-          type="password" minlength="6" required><label for="confirm-new-password">Confirm new password</label><input
-          id="confirm-new-password" type="password" minlength="6" required><button class="secondary"
+          type="password" minlength="10" maxlength="72" required autocomplete="new-password"><label for="confirm-new-password">Confirm new password</label><input
+          id="confirm-new-password" type="password" minlength="10" maxlength="72" required autocomplete="new-password"><button class="secondary"
           type="submit">Update password</button></form>
       <p id="profile-message" role="status"></p>
+    </section>
+    <section class="profile-card order-card">
+      <h2>My Favourites</h2>
+      <p class="muted">Dishes saved from the home page and menu on this browser.</p>
+      <ul id="my-favourites" class="my-favourites-list"><li>No favourites yet.</li></ul>
     </section>
     <section class="profile-card order-card">
       <h2>My Orders</h2>

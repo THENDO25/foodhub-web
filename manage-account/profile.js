@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   renderOrders();
+  renderFavourites();
   document.getElementById("profile-logout").addEventListener("click", function () {
     window.foodHubSession.signOut("../home/index.html");
   });
@@ -73,12 +74,78 @@ document.addEventListener("DOMContentLoaded", async function () {
     let orders = [];
     try {
       const data = await window.foodHubApi.get("/api/orders/mine");
-      orders = data.orders || [];
+      orders = Array.isArray(data.orders) ? data.orders : [];
     } catch (_) {
       // leave orders empty on error
     }
-    container.innerHTML = orders.length ? orders.map(order => `<div class="order-row"><strong>${escapeHtml(order.id)} · R${Number(order.total || 0).toFixed(2)}</strong><small>${new Date(order.createdAt || Date.now()).toLocaleString()}</small><br><span class="status">${escapeHtml(order.status || "Pending")}</span><p>${(order.products || []).map(item => `${escapeHtml(item.name)} × ${Number(item.quantity || 1)}`).join(", ")}</p></div>`).join("") : "<p>No orders yet.</p>";
+    container.replaceChildren();
+    if (!orders.length) {
+      const empty = document.createElement("p");
+      empty.textContent = "No orders yet.";
+      container.appendChild(empty);
+      return;
+    }
+    orders.forEach(order => {
+      const row = document.createElement("div");
+      row.className = "order-row";
+      const heading = document.createElement("strong");
+      heading.textContent = `${String(order.id || "Order")} · R${(Number(order.total) || 0).toFixed(2)}`;
+      const date = document.createElement("small");
+      const parsedDate = new Date(order.createdAt || Date.now());
+      date.textContent = Number.isNaN(parsedDate.getTime()) ? "" : parsedDate.toLocaleString();
+      const lineBreak = document.createElement("br");
+      const status = document.createElement("span");
+      status.className = "status";
+      status.textContent = String(order.status || "Pending");
+      const items = document.createElement("p");
+      items.textContent = (Array.isArray(order.products) ? order.products : [])
+        .filter(item => item && typeof item === "object")
+        .map(item => `${String(item.name || "Food item")} × ${Math.max(1, Number(item.quantity) || 1)}`)
+        .join(", ");
+      row.append(heading, date, lineBreak, status, items);
+      container.appendChild(row);
+    });
   }
 
-  function escapeHtml(value) { return String(value ?? "").replace(/[&<>\"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch])); }
+  function renderFavourites() {
+    const list = document.getElementById("my-favourites");
+    if (!list) return;
+    list.replaceChildren();
+    let favourites = [];
+    try {
+      const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
+      favourites = Array.isArray(stored) ? stored : [];
+    } catch (_) { favourites = []; }
+    if (!favourites.length) {
+      const empty = document.createElement("li");
+      empty.textContent = "No favourites yet. Browse the menu and tap a heart to save a dish.";
+      list.appendChild(empty);
+      return;
+    }
+    favourites.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.className = "favourite-row";
+      const title = document.createElement("strong");
+      title.textContent = String(item.title || item.name || "Food item");
+      const price = document.createElement("span");
+      price.textContent = `R${(Number(item.price) || 0).toFixed(2)}`;
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "secondary";
+      remove.textContent = "Remove";
+      remove.addEventListener("click", () => {
+        let current = [];
+        try {
+          const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
+          current = Array.isArray(stored) ? stored : [];
+        } catch (_) { current = []; }
+        current.splice(index, 1);
+        localStorage.setItem("favorites", JSON.stringify(current));
+        renderFavourites();
+      });
+      li.append(title, price, remove);
+      list.appendChild(li);
+    });
+  }
+
 });

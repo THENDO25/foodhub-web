@@ -141,3 +141,9 @@ hr {
         padding: 20px
     }
 }
+
+/* Favourites saved from the home page and menu */
+.my-favourites-list { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: .75rem; }
+.my-favourites-list li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: .75rem; border: 1px solid #e7e7e7; border-radius: .65rem; }
+.my-favourites-list .secondary { margin-left: auto; }
+.payment-note { font-size: .9rem; color: #7a4b00; background: #fff4d6; padding: .65rem; border-radius: .5rem; }

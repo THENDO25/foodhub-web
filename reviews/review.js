@@ -103,69 +103,116 @@ document.addEventListener("DOMContentLoaded", function () {
   const reviewGrid = document.querySelector('.review-grid');
   const addReviewContainer = document.querySelector('.AddReview').parentElement;
 
-  function escapeReviewHtml(value) {
-    return String(value).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[c]);
+  function buildReviewNode(reviewerName, reviewText) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'review-page';
+    const names = document.createElement('div');
+    names.className = 'names';
+    const image = document.createElement('img');
+    image.src = '../assets/images/thendo.enc';
+    image.alt = 'Profile Picture';
+    image.className = 'profile-picture';
+    const name = document.createElement('h6');
+    name.textContent = reviewerName || 'Customer';
+    names.append(image, name);
+
+    const quote = document.createElement('p');
+    quote.textContent = `"${reviewText}"`;
+    const actions = document.createElement('div');
+    actions.className = 'review-actions';
+    const review = document.createElement('div');
+    review.className = 'review';
+    const like = document.createElement('button');
+    like.className = 'like-btn';
+    like.type = 'button';
+    const likeIcon = document.createElement('i');
+    likeIcon.className = 'bx bxs-like';
+    likeIcon.setAttribute('aria-hidden', 'true');
+    const likeCount = document.createElement('span');
+    likeCount.className = 'like-count';
+    likeCount.textContent = '0';
+    like.append(likeIcon, document.createTextNode('Like '), likeCount);
+    const dislike = document.createElement('button');
+    dislike.className = 'dislike-btn';
+    dislike.type = 'button';
+    const dislikeIcon = document.createElement('i');
+    dislikeIcon.className = 'bx bxs-dislike';
+    dislikeIcon.setAttribute('aria-hidden', 'true');
+    const dislikeCount = document.createElement('span');
+    dislikeCount.className = 'dislike-count';
+    dislikeCount.textContent = '0';
+    dislike.append(dislikeIcon, document.createTextNode('Dislike '), dislikeCount);
+    const comment = document.createElement('button');
+    comment.className = 'comment-btn';
+    comment.type = 'button';
+    const commentIcon = document.createElement('i');
+    commentIcon.className = 'bx bx-comment';
+    commentIcon.setAttribute('aria-hidden', 'true');
+    comment.append(commentIcon, document.createTextNode('Comment'));
+    const heading = document.createElement('h2');
+    heading.className = 'commentsh2';
+    heading.textContent = 'Comments';
+    const commentsArea = document.createElement('div');
+    commentsArea.className = 'comments-area';
+    const inputArea = document.createElement('div');
+    inputArea.className = 'comment-input';
+    inputArea.style.display = 'none';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.maxLength = 500;
+    input.placeholder = 'Write a comment...';
+    const submit = document.createElement('button');
+    submit.type = 'button';
+    submit.className = 'submit-comment';
+    submit.textContent = 'Submit';
+    inputArea.append(input, submit);
+    const comments = document.createElement('div');
+    comments.className = 'comments-container';
+    commentsArea.append(inputArea, comments);
+    review.append(like, dislike, comment, heading, commentsArea);
+    actions.appendChild(review);
+    wrapper.append(names, quote, actions);
+    return wrapper;
   }
 
-  // Persist the review through the API (SQLite). The server decides who the
-  // reviewer actually is from the session cookie — it never trusts a name
-  // the client might send — and the text comes back out already meant to be
-  // HTML-escaped at render time (see escapeReviewHtml below), so a review
-  // containing something like "<script>" or an <img onerror=...> tag is
-  // stored as plain text and shown as plain text, not executed.
+  // Load persisted reviews safely after a refresh. Each saved field is assigned
+  // through textContent by buildReviewNode, so stored markup remains inert text.
+  async function loadSavedReviews() {
+    try {
+      const result = await window.foodHubApi.get('/api/reviews');
+      (result.reviews || []).slice().reverse().forEach(saved => {
+        const savedId = String(saved.id || '');
+        if (savedId && Array.from(reviewGrid.querySelectorAll('[data-review-id]')).some(node => node.dataset.reviewId === savedId)) return;
+        const node = buildReviewNode(saved.name || 'Customer', saved.text || '');
+        node.dataset.reviewId = String(saved.id || '');
+        reviewGrid.insertBefore(node, addReviewContainer);
+        applyReviewLogic(node.querySelector('.review'));
+      });
+    } catch (err) {
+      console.warn('Saved reviews could not be loaded.', err);
+    }
+  }
+  loadSavedReviews();
+
+  // Store review text as text. It is never parsed as HTML on the client.
   addReviewBtn.addEventListener('click', async () => {
     const reviewText = reviewInput.value.trim();
     if (reviewText === '') return;
+    if (reviewText.length > 1000) { alert('Reviews must be 1000 characters or fewer.'); return; }
 
     addReviewBtn.disabled = true;
-    let saved;
     try {
       const result = await window.foodHubApi.post('/api/reviews', { text: reviewText });
-      saved = result.review;
+      const saved = result.review || {};
+      const reviewWrapper = buildReviewNode(saved.name || 'Customer', saved.text || reviewText);
+      if (saved.id) reviewWrapper.dataset.reviewId = String(saved.id);
+      reviewGrid.insertBefore(reviewWrapper, addReviewContainer);
+      applyReviewLogic(reviewWrapper.querySelector('.review'));
+      reviewInput.value = '';
     } catch (err) {
       alert(err.message || 'Could not post your review.');
+    } finally {
       addReviewBtn.disabled = false;
-      return;
     }
-    addReviewBtn.disabled = false;
-
-    const reviewerName = saved.name;
-
-    const reviewHTML = `
-      <div class="review-page">
-        <div class="names">
-          <img src="../assets/images/thendo.enc" alt="Profile Picture" class="profile-picture">
-          <h6>${escapeReviewHtml(reviewerName)}</h6>
-        </div>
-        <p>"${escapeReviewHtml(reviewText)}"</p>
-        <div class="review-actions">
-          <div class="review">
-            <button class="like-btn"><i class='bx bxs-like'></i>Like <span class="like-count">0</span></button>
-            <button class="dislike-btn"><i class='bx bxs-dislike'></i>Dislike <span class="dislike-count">0</span></button>
-            <button class="comment-btn"><i class='bx bx-comment'></i>Comment</button>
-            <h2 class="commentsh2">Comments</h2>
-            <div class="comments-area">
-              <div class="comment-input" style="display:none;">
-                <input type="text" placeholder="Write a comment..." />
-                <button class="submit-comment">Submit</button>
-              </div>
-              <div class="comments-container"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-const temp = document.createElement('div');
-temp.innerHTML = reviewHTML;
-const newReviewPage = temp.firstElementChild;
-
-const reviewWrapper = document.createElement('div');
-reviewWrapper.className = 'review-page'; // Ensures correct width and styling
-reviewWrapper.innerHTML = newReviewPage.innerHTML;
-
-reviewGrid.insertBefore(reviewWrapper, addReviewContainer);
-applyReviewLogic(reviewWrapper.querySelector('.review'));
-    reviewInput.value = '';
   });
 });

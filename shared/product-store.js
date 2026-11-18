@@ -48,3 +48,15 @@ function escapeHtml(value) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
   })[character]);
 }
+
+
+// Restrict catalogue image sources to same-origin HTTP(S) or HTTPS URLs.
+function safeImageUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  try {
+    const url = new URL(raw, window.location.href);
+    if (url.protocol === "https:" || (url.protocol === "http:" && url.origin === window.location.origin)) return url.href;
+  } catch (_) { /* invalid URL */ }
+  return "";
+}

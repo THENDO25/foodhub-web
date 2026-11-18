@@ -1,6 +1,7 @@
 // Lets admins view customer details.
 const express = require("express");
 const db = require("../db");
+const { body, validationResult } = require("express-validator");
 const { requireAdmin } = require("../middleware/auth");
 
 const router = express.Router();
@@ -22,18 +23,26 @@ router.get("/", requireAdmin, (req, res) => {
   });
 });
 
-router.put("/:id", requireAdmin, (req, res) => {
-  const target = db.prepare("SELECT * FROM users WHERE id = ? AND role = 'customer'").get(req.params.id);
-  if (!target) return res.status(404).json({ error: "Customer not found." });
-  const { name, phone = "", address = "" } = req.body;
-  db.prepare("UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?").run(
-    String(name || target.name).trim(),
-    String(phone).trim(),
-    String(address).trim(),
-    target.id
-  );
-  res.json({ ok: true });
-});
+router.put(
+  "/:id",
+  requireAdmin,
+  [
+    body("name").isString().trim().isLength({ min: 2, max: 100 }),
+    body("phone").optional({ checkFalsy: true }).isString().trim().isLength({ max: 40 }),
+    body("address").optional({ checkFalsy: true }).isString().trim().isLength({ max: 300 }),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: "Please check the customer details." });
+    const target = db.prepare("SELECT * FROM users WHERE id = ? AND role = 'customer'").get(req.params.id);
+    if (!target) return res.status(404).json({ error: "Customer not found." });
+    const { name, phone = "", address = "" } = req.body;
+    db.prepare("UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?").run(
+      name.trim(), String(phone).trim(), String(address).trim(), target.id
+    );
+    res.json({ ok: true });
+  }
+);
 
 router.delete("/:id", requireAdmin, (req, res) => {
   const target = db.prepare("SELECT * FROM users WHERE id = ? AND role = 'customer'").get(req.params.id);
